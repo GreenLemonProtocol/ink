@@ -6,7 +6,7 @@ The Green Lemon protocol is an anonymous NFT solution based on zero-knowledge pr
 
 ## Protocol Description
 
-The protocol contains the following functions
+The protocol contains the following functions:
 
 * Deposit: The user deposit a coin to the NFT anonymous contract and get a note, which is used to pay the relayer fees for anonymous transactions.
 * Withdrawal: The user takes back the coin previously deposited, and nullifies the corresponding note.
@@ -29,7 +29,7 @@ DKSAP is a new privacy transaction protocol invented by rynomster/sdcoin in 2014
 
 Next, we describe the specific details of the protocol implementation.
 
-### Deposit
+#### Deposit
 
 To deposit a coin, the user performs the following steps.
 
@@ -38,7 +38,7 @@ To deposit a coin, the user performs the following steps.
 
 After the deposit is successful, the user gets the corresponding note.
 
-### Send transactions related to NFT contracts.
+#### Send transactions related to NFT contracts.
 
 Prepare the zero-knowledge proof circuit to input the required data:
 
@@ -60,7 +60,7 @@ Perform the following steps:
 * Mark that nullifierHash has been spent, send the fee to the relayer, and withdraw the remaining Token to the recipient.
 * Trigger the corresponding NFT function, where the fee needs to be greater than the current transaction fee.
 
-### DKSAP Technical Details (Dual-Key Stealth Address Protocol)
+#### DKSAP Technical Details (Dual-Key Stealth Address Protocol)
 
 Let's take the example of Alice transferring anonymous NFT to Bob, the details are as follows.
 
