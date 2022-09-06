@@ -4,7 +4,7 @@
 
 The Green Lemon protocol is an anonymous NFT solution based on zero-knowledge proof and dual-key stealth address protocol: users deposit coins to an anonymous NFT contract and then anonymously send mint, transfer, and other ERC721 functions to that contract via relayer.
 
-## Protocol Description
+### Protocol Description
 
 The protocol contains the following functions:
 
@@ -15,7 +15,7 @@ The protocol contains the following functions:
 * Transfer: The user generates the encrypted public key address ePub2 based on the scan pub of the recipient and uses the private key signature corresponding to ePub1 to anonymously transfer the NFT, and the owner of the NFT is ePub2.
 * Other functions supported by ERC721.
 
-## Protocol Algorithm
+### Protocol Algorithm
 
 The protocol implements the function of initiating anonymous transactions through zero-knowledge proofs and the function of hiding NFT owners through DKSAP.
 
@@ -71,7 +71,7 @@ Let's take the example of Alice transferring anonymous NFT to Bob, the details a
 * Bob checks the transaction data of the NFT contract in real time, gets the R of each private transaction, calculates the shared key c, and then overlays the scan key to calculate P', as long as the public key P' is equal to P in the transaction data, the receiver of the NFT is Bob himself. Since P = (c + b) ^ G, the private key corresponding to the public key P is c + b
 * Only Bob owns the private key b and can also calculate the shared key c, so only Bob is the owner of the NFT
 
-## Application Scenario
+### Application Scenario
 
 NFT sales on Ethereum exceeded $9 billion in 2021, a 25,00% increase over total sales in 2020. 2021, the year of NFT, also emerged in the context of the bull market cycle, the size of the NFT market showed an amazing growth trend, with a market capitalization of more than $10 billion. Due to the bear market in the first quarter of 2022, global NFT trading volume still rose 13.25% quarter-on-quarter.
 
