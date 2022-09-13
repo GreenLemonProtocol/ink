@@ -1,5 +1,9 @@
 # Green Lemon Protocol
 
+## Background
+
+Many of today’s blockchains, including Bitcoin and Ethereum, are open and public ledgers because there are no restrictions on participation and all transaction details are visible on the blockchain. In a public ledger, the transaction entities are only identified by their blockchain addresses, which are derived from the corresponding public keys. Public ledgers are generally considered to be “pseudo-anonymous”, which means that an address is linked to one person, but that person is unknown to the public. However, by analyzing the transaction graph and combining it with other information, it is possible to reveal the true real-world identity behind a blockchain address, as shown by recent research.
+
 ## Overview
 
 The Green Lemon protocol is an anonymous NFT solution based on zero-knowledge proof and dual-key stealth address protocol: users deposit coins to an anonymous NFT contract and then anonymously send mint, transfer, and other ERC721 functions to that contract via relayer.
