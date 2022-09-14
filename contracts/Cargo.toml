@@ -17,9 +17,9 @@ scale = { package = "parity-scale-codec", version = "3", default-features = fals
 scale-info = { version = "2", default-features = false, features = ["derive"], optional = true }
 
 # zk library
-zkmega-arkworks = { git = "https://github.com/kay404/zkmega", branch = "master", default-features = false }
+zkmega-arkworks = { git = "https://github.com/GreenLemonProtocol/zkmega", branch = "master", default-features = false }
 primitive-types = {version = "0.11", default-features = false, features = ["codec"]}
-zkp-u256 = { git = "https://github.com/kay404/OpenZKP", branch = "master", default-features = false }
+zkp-u256 = { git = "https://github.com/GreenLemonProtocol/OpenZKP", branch = "master", default-features = false }
 hex = { version = "0.4.3", default-features = false, features = ["alloc"] }
 bitvec = {version = "1.0.1", default-features = false, features = ["atomic", "alloc"]}
 
