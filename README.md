@@ -27,7 +27,7 @@ Currently, a large number of anonymous transaction projects use zero-knowledge p
 
 Zether comes to our attention with its unique implementation, which uses the Σ-Bullets protocol, does not require the generation of public parameters for the initiation ceremony, and uses the Elgamal encryption algorithm for homomorphic encryption and decryption of account balance, which are excellent features. But the Gas for anonymous transfers involving 64 accounts verified on-chain amounted to 36,152,558.
 
-Meanwhile, Tornado, based on zkSnark, performed well in terms of Gas, with a Gas consumption of 1,088,354 for deposits and 301,233 for withdrawals, although Tornado is not designed to support cross-contract calls. After comparison, we decided to develop zero-knowledge proof module based on [zokrates](https://zokrates.github.io/gettingstarted.html)(zkSNARK).
+Meanwhile, Tornado, based on zkSnark, performed well in terms of Gas, with a Gas consumption of 1,088,354 for deposits and 301,233 for withdrawals, although Tornado is not designed to support cross-contract calls. After comparison, we decided to develop zero-knowledge proof module based on [zokrates](https://zokrates.github.io/gettingstarted.html)(a toolbox for zkSNARKs).
 
 DKSAP is a new privacy transaction protocol invented by rynomster/sdcoin in 2014. Since its announcement, it has landed in numerous blockchain projects (Monero, Samourai Wallet, TokenPay, etc.). It is characterized by the fact that the account needs to generate two sets of public and private key pairs, "scan key pair", and "spend key pair", the recipient of each transaction is encrypted and cannot be associated with a particular blockchain account.
 
