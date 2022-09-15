@@ -27,7 +27,7 @@ const pedersenHash = async (data, size = 64) =>
     0xb7, 0x5d, 0x3a, 0xaf, 0x2d, 0x9b, 0x51,
   ]);
   let commitment = await hashFn(nullifier, secret, true);
-  console.log('commitment: ' + commitment);
+  console.log("commitment:", toHex(commitment));
   // construct a merkle tree, it contains one leaf for this example
   let leaves = [commitment];
   let tree = new merkleTree();
