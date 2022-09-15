@@ -1056,7 +1056,7 @@ dependencies = [
 [[package]]
 name = "zkmega-arkworks"
 version = "0.1.0"
-source = "git+https://github.com/kay404/zkmega?branch=master#8cc6f66324e261aa3d9114f2b3d08f27877cc462"
+source = "git+https://github.com/GreenLemonProtocol/zkmega?branch=master#432ba796fcdcda1da6c428fe8c4a270fed52065b"
 dependencies = [
  "ark-bls12-377",
  "ark-bls12-381",
@@ -1076,7 +1076,7 @@ dependencies = [
 [[package]]
 name = "zkp-u256"
 version = "0.2.0"
-source = "git+https://github.com/kay404/OpenZKP?branch=master#6207f78493292cabb0be21a3b7eff44fda11204a"
+source = "git+https://github.com/GreenLemonProtocol/OpenZKP?branch=master#dceb4ff46ee472d8a8f493d0abb7ff192e52a508"
 dependencies = [
  "crunchy",
  "hex",
