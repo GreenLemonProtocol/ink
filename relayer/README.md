@@ -11,7 +11,7 @@ Both `register` and `execute` require the user generate zero-knowledge proof to 
 
 ##### Build contract
 ```
-cd contracts
+cd relayer/contracts
 cargo +nightly contract build
 ``` 
 
