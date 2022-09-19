@@ -46,6 +46,7 @@ After the deposit is successful, the user gets the corresponding note.
 
 Prepare the zero-knowledge proof circuit to input the required data:
 
+```
 * signal input root; 				// Merkle tree root 
 * signal input nullifierHash;    // nullifier hash value
 * signal input recipient;        // recipient to receive the remaining token
@@ -56,6 +57,7 @@ Prepare the zero-knowledge proof circuit to input the required data:
 * signal private input secret;      // secret
 * signal private input pathElements[levels];    // path element to Merkle tree root
 * signal private input pathIndices[levels];    // index of path element
+```
 
 Perform the following steps:
 
