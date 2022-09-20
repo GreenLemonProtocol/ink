@@ -6,18 +6,15 @@ Many of today’s blockchains, including Bitcoin and Ethereum, are open and publ
 
 ## Overview
 
-The Green Lemon protocol is an anonymous NFT solution based on zero-knowledge proof and dual-key stealth address protocol: users deposit coins to an anonymous NFT contract and then anonymously send mint, transfer, and other ERC721 functions to that contract via relayer.
+The Green Lemon protocol is an anonymous NFT solution based on zero-knowledge proof and dual-key stealth address protocol: users deposit coins to relayer contract and then anonymously send mint, transfer, and other ERC721 functions to that contract via relayer service.
 
 ### Protocol Description
 
 The protocol contains the following functions:
 
 * Deposit: The user deposit a coin to the NFT anonymous contract and get a note, which is used to pay the relayer fees for anonymous transactions.
-* Withdrawal: The user takes back the coin previously deposited, and nullifies the corresponding note.
-* Registration: The user registers the Scan public key and Spend public key to the NFT contract, so other users can query it on-chain.
-* Mint: The user generates the encrypted public key address ePub1(encrypted pub key) based on his scan pub and anonymously mint NFT through the relayer, the owner of this NFT is ePub1
-* Transfer: The user generates the encrypted public key address ePub2 based on the scan pub of the recipient and uses the private key signature corresponding to ePub1 to anonymously transfer the NFT, and the owner of the NFT is ePub2.
-* Other functions supported by ERC721.
+* Register: The user registers the `scan public key` and `spend public key` to the relayer contract so that other users can query it on-chain. 
+* Execute: The user calls the NFT contract's function through the relayer contract.
 
 ### Protocol Algorithm
 
