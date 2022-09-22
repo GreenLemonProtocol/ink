@@ -24,9 +24,3 @@ cargo +nightly contract test
 ```
 cargo doc --open
 ```
-
-##### Generate commitment
-```
-cd tests
-node index.js
-```
