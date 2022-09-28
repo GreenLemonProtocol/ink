@@ -11,9 +11,6 @@
   "dependencies": {
     "@polkadot/util-crypto": "^10.1.7",
     "big-integer": "^1.6.51",
-    "hex-to-binary": "^1.0.1",
-    "python-shell": "^3.0.1",
-    "safe-buffer": "^5.2.1",
     "zokrates-js": "^1.1.3"
   }
 }

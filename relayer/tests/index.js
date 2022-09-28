@@ -1,16 +1,14 @@
 const crypto = require('crypto');
-const pycryptojs = require('./zokrates-pycryptojs');
 const fs = require('fs');
 const merkleTree = require('./merkle-tree.js');
 const polkadotCrypto = require('@polkadot/util-crypto');
 const { initialize } = require('zokrates-js');
 const { assert } = require('console');
-
+const { mimcHash } = require('./mimc');
+const bigInt = require('big-integer');
+const path = require('path');
 // merkle tree levels
 const LEVEL = 10;
-
-const pedersenHash = async (data, size = 64) =>
-  (await pycryptojs.pedersenHash(data, size))[0];
 
 (async () => {
   // zokrates field value can only hold 254 bits
@@ -26,24 +24,23 @@ const pedersenHash = async (data, size = 64) =>
   //   0x61, 0x76, 0xe2, 0x17, 0x73, 0x06, 0x6a, 0xf8, 0x3d, 0x22, 0x3a, 0xd3,
   //   0xb7, 0x5d, 0x3a, 0xaf, 0x2d, 0x9b, 0x51,
   // ]);
-  let commitment = await hashFn(nullifier, secret, true);
-  console.log('commitment:', toHex(commitment));
-  console.log('');
-  console.log('start generating zero-knowledg proof, it takes about 30 seconds.');
-  console.log('');
+  let commitment = mimcHash(rbigint(nullifier), rbigint(secret));
+  console.log("commitment:", commitment.toString(16));
   // construct a merkle tree, it contains one leaf for this example
   let leaves = [commitment];
   let tree = new merkleTree();
-  await tree.init(LEVEL, leaves, { hashFunction: hashFn });
-  let nullifierHash = await pedersenHash(toHex(nullifier), 32);
+  tree.init(LEVEL, leaves, { hashFunction: mimcHash });
+  console.log(tree.root().toString())
+  // return
+  let nullifierHash = mimcHash(rbigint(nullifier));
 
   let index = 0;
   const { pathElements, pathIndices } = tree.path(index);
-  let path = [[], [], []];
+  let pathE = [[], [], []];
   for (let i = 0; i < LEVEL; ++i) {
-    path[i] = toU32Array(toHex(pathElements[i]));
+    pathE[i] = pathElements[i].toString();
   }
-  path = path.flat(Infinity);
+  pathE = pathE.flat(Infinity);
   let recipient = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
   let receiptArray = polkadotCrypto.decodeAddress(recipient);
   let relayer = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty';
@@ -57,31 +54,33 @@ const pedersenHash = async (data, size = 64) =>
   // inputs for compute witness
   let inputs = [
     // public input
-    ...toU32Array(toHex(tree.root())),
-    ...toU32Array(nullifierHash),
-    ...toU32Array(Buffer.from(receiptArray).toString('hex')),
-    ...toU32Array(Buffer.from(relayerArray).toString('hex')),
+    tree.root().toString(),
+    nullifierHash.toString(),
+    ...toArray(Buffer.from(receiptArray).toString('hex'), 2),
+    ...toArray(Buffer.from(relayerArray).toString('hex'), 2),
     fee,
     refund,
     // private input
-    BigInt('0x' + toHex(nullifier)).toString(),
-    BigInt('0x' + toHex(secret)).toString(),
-    ...path,
+    rbigint(nullifier).toString(),
+    rbigint(secret).toString(),
+    ...pathE,
     ...pathIndices,
   ];
-  // console.log(inputs.toString())
+  console.log("witness inputs:\n" + inputs.toString().replace(/,/g, ' '));
 
   // initialize zokrates provider
   let zokratesProvider = await initialize();
   const artifacts = {
-    program: Array.from(fs.readFileSync('../build/out')),
-    abi: fs.readFileSync('../build/abi.json').toString(),
+    program: Array.from(fs.readFileSync(path.join(__dirname + '/../build/out'))),
+    abi: fs.readFileSync(path.join(__dirname + '/../build/abi.json')).toString(),
   };
+
+  console.log('\nstart generating zero-knowledge proof, it takes about 1 minute.\n');
   // compute witness
   const { witness } = zokratesProvider.computeWitness(artifacts, inputs);
 
   // generate zk proof
-  let provingKey = Array.from(fs.readFileSync('../build/proving.key'));
+  let provingKey = Array.from(fs.readFileSync(path.join(__dirname + '/../build/proving.key')));
   const proofAndInput = zokratesProvider.generateProof(
     artifacts.program,
     witness,
@@ -90,7 +89,7 @@ const pedersenHash = async (data, size = 64) =>
 
   // zk proof verify
   const verificationKey = JSON.parse(
-    fs.readFileSync('../build/verification.key')
+    fs.readFileSync(path.join(__dirname + '/../build/verification.key'))
   );
   const isVerified = zokratesProvider.verify(verificationKey, proofAndInput);
   assert(isVerified);
@@ -100,12 +99,12 @@ const pedersenHash = async (data, size = 64) =>
   console.log(
     'proof:',
     to_g1(proofAndInput.proof.a) +
-    to_g2(proofAndInput.proof.b) +
-    to_g1(proofAndInput.proof.c)
+      to_g2(proofAndInput.proof.b) +
+      to_g1(proofAndInput.proof.c)
   );
   // public inputs for ink! contract to withdraw
-  console.log('root:', toHex(tree.root()));
-  console.log('nullifierHahs:', nullifierHash);
+  console.log('root:', tree.root().toString(16));
+  console.log('nullifierHahs:', nullifierHash.toString(16));
   console.log('recipient:', recipient);
   console.log('relayer:', relayer);
   console.log('fee:', fee);
@@ -139,13 +138,26 @@ function to_g2(g2) {
   return buf.toString('hex');
 }
 
-// 32 bytes hex string to uint32array, contains 8 elements
-function toU32Array(hexString) {
+// // 32 bytes hex string to uint32array, contains 8 elements
+// function toU32Array(hexString) {
+//   let result = [];
+//   for (let i = 0; i < 8; ++i) {
+//     result[i] = parseInt(hexString.slice(0 + i * 8, i * 8 + 8), 16).toString();
+//   }
+//   return result;
+// }
+// 32 bytes hex string to uint8array
+function toArray(hexString, size) {
   let result = [];
-  for (let i = 0; i < 8; ++i) {
-    result[i] = parseInt(hexString.slice(0 + i * 8, i * 8 + 8), 16).toString();
+  let len = hexString.length / size;
+  for (let i = 0; i < size; ++i) {
+    result[i] = bigInt(hexString.slice(0 + i * len, i * len + len), 16).toString();
   }
   return result;
+}
+
+function rbigint(nbytes) {
+  return bigInt(BigInt('0x' + toHex(nbytes)));
 }
 
 // from Buffer or BigInt to hex string
@@ -155,11 +167,4 @@ function toHex(number, length = 32) {
       ? number.toString('hex')
       : BigInt(number).toString(16);
   return str.padStart(length * 2, '0');
-}
-
-// hashFn for merkle tree
-async function hashFn(left, right) {
-  // console.log('preimage: ', toHex(left) + toHex(right));
-  let result = '0x' + (await pedersenHash(toHex(left) + toHex(right), 64));
-  return BigInt(result);
 }

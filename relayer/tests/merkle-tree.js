@@ -1,41 +1,42 @@
 class MerkleTree {
   // constructor() {}
-  async init(levels, elements = [], { hashFunction, zeroElement = 0 } = {}) {
+  init(levels, elements = [], { hashFunction, zeroElement = '0' } = {}) {
     if (elements.length > this.capacity) {
       throw new Error('Tree is full');
     }
     this.levels = levels;
+
     this._hashFn = hashFunction;
     this.zeroElement = zeroElement;
     this._layers = [];
     const leaves = elements.slice();
     this._layers = [leaves];
-    await this._buildZeros();
-    await this._buildHashes();
+    this._buildZeros();
+    this._buildHashes();
   }
 
   root() {
     return this._layers[this.levels][0] ?? this._zeros[this.levels];
   }
 
-  async _buildHashes() {
+  _buildHashes() {
     for (let layerIndex = 1; layerIndex <= this.levels; layerIndex++) {
       const nodes = this._layers[layerIndex - 1];
-      this._layers[layerIndex] = await this._processNodes(nodes, layerIndex);
+      this._layers[layerIndex] = this._processNodes(nodes, layerIndex);
     }
   }
 
-  async _buildZeros() {
+  _buildZeros() {
     this._zeros = [this.zeroElement];
     for (let i = 1; i <= this.levels; i++) {
-      this._zeros[i] = await this._hashFn(
+      this._zeros[i] = this._hashFn(
         this._zeros[i - 1],
         this._zeros[i - 1]
       );
     }
   }
 
-  async _processNodes(nodes, layerIndex) {
+  _processNodes(nodes, layerIndex) {
     const length = nodes.length;
     let currentLength = Math.ceil(length / 2);
     const currentLayer = new Array(currentLength);
@@ -49,7 +50,7 @@ class MerkleTree {
         i === starFrom && length % 2 === 1
           ? this._zeros[layerIndex - 1]
           : nodes[i];
-      currentLayer[currentLength - j] = await this._hashFn(left, right);
+      currentLayer[currentLength - j] = this._hashFn(left, right);
       j++;
     }
     return currentLayer;

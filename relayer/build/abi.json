@@ -3,28 +3,20 @@
     {
       "name": "root",
       "public": true,
-      "type": "array",
-      "components": {
-        "size": 8,
-        "type": "u32"
-      }
+      "type": "field"
     },
     {
       "name": "nullifierHash",
       "public": true,
-      "type": "array",
-      "components": {
-        "size": 8,
-        "type": "u32"
-      }
+      "type": "field"
     },
     {
       "name": "recipient",
       "public": true,
       "type": "array",
       "components": {
-        "size": 8,
-        "type": "u32"
+        "size": 2,
+        "type": "field"
       }
     },
     {
@@ -32,8 +24,8 @@
       "public": true,
       "type": "array",
       "components": {
-        "size": 8,
-        "type": "u32"
+        "size": 2,
+        "type": "field"
       }
     },
     {
@@ -62,11 +54,7 @@
       "type": "array",
       "components": {
         "size": 10,
-        "type": "array",
-        "components": {
-          "size": 8,
-          "type": "u32"
-        }
+        "type": "field"
       }
     },
     {

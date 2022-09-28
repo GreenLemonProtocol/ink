@@ -8,19 +8,59 @@ The relayer contract contains three functions: deposit, register, and execute.
 
 Both `register` and `execute` require the user generate zero-knowledge proof to transfer notes to the relayer as transaction fees.
 
+## Build circuits
 
-##### Build contract
+```sh
+bash circuits/build.sh
 ```
-cd relayer/contracts
-cargo +nightly contract build
-``` 
 
-##### Test contract
+## Build contract
+
+```sh
+bash contracts/build.sh
 ```
+
+## Test contract
+
+```sh
 cargo +nightly contract test
 ```
 
-##### Generate docs
-```
+## Deploy contract
+
+1. deploy verifier contract
+
+2. deploy anonymous contract with verifier contract account id
+
+## Generate docs
+
+```sh
 cargo doc --open
+```
+
+## Generate commitment
+
+```sh
+node tests/index.js
+```
+
+## Generate proof by zokrates
+
+1、compute witness
+
+```sh
+node tests/index.js
+```
+
+copy `witness inputs`
+
+```sh
+cd build
+zokrates compute-witness -a COPY_WITNESS_INPUTS
+```
+
+2、generate proof
+
+```sh
+zokrates generate-proof
 ```

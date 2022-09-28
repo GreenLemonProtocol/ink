@@ -17,22 +17,15 @@ run `build.sh` to compile the circuits and setup step to generate `proving.key` 
 After built circuits
 
 ```sh
-cd ../build/verifier
+cd ../contract/verifier
 ```
 
-For new setup step, you need update the value of `VK` and `VK_GAMMA_ABC` from `verification.key` file.
+For new setup step, you need update the value of `VK` and `VK_GAMMA_ABC` in `constants.rs` according to the `verification.key` file.
 
 ```rust
-#[ink::contract]
-mod verifier {
-    use ink_prelude::{string::String, vec, vec::Vec};
-    use ink_storage::traits::SpreadAllocate;
-    use zkmega_arkworks::{curve::Bn254, groth16};
-    // VK = [alpha beta gamma delta]
-    static VK: [&str; 14] = [];
-    static VK_GAMMA_ABC: [&str; 70] = [];
-    ....
-}
+// VK = [alpha beta gamma delta]
+pub static VK: [&str; 14] = [];
+pub static VK_GAMMA_ABC: [&str; 18] = [];
 ```
 
 **Warnning**: proving scheme only support groth16 for now.
