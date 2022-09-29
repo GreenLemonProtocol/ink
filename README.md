@@ -10,13 +10,13 @@ Both `withdrawal` and `execute` require the user generate a zero-knowledge proof
 
 ## Build circuits
 
-```sh
+```
 sh circuits/build.sh
 ```
 
 ## Build contract
 
-```sh
+```
 cd contracts/anonymous
 cargo build --release
 
@@ -26,7 +26,7 @@ cargo build --release
 
 ## Test contract
 
-```sh
+```
 cargo +nightly contract test
 ```
 
@@ -38,13 +38,13 @@ cargo +nightly contract test
 
 ## Generate docs
 
-```sh
+```
 cargo doc --open
 ```
 
 ## Generate commitment
 
-```sh
+```
 node tests/index.js
 ```
 
@@ -52,19 +52,19 @@ node tests/index.js
 
 1、compute witness
 
-```sh
+```
 node tests/index.js
 ```
 
 copy `witness inputs`
 
-```sh
+```
 cd build
 zokrates compute-witness -a COPY_WITNESS_INPUTS
 ```
 
 2、generate proof
 
-```sh
+```
 zokrates generate-proof
 ```
