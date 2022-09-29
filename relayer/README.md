@@ -11,13 +11,13 @@ Both `register` and `execute` require the user generate zero-knowledge proof to 
 ## Build circuits
 
 ```sh
-bash circuits/build.sh
+sh circuits/build.sh
 ```
 
 ## Build contract
 
 ```sh
-bash contracts/build.sh
+sh contracts/build.sh
 ```
 
 ## Test contract
