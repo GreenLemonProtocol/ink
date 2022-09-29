@@ -1,12 +1,12 @@
 # Relayer Contract
 
-The relayer contract contains three functions: deposit, register, and execute.
+The relayer contract contains three functions: deposit, withdrawal, and execute.
 
 * Deposit: The user deposit a coin to the NFT anonymous contract and get a note, which is used to pay the relayer fees for anonymous transactions.
-* Register: The user registers the `scan public key` and `spend public key` to the relayer contract so that other users can query it on-chain. 
+* Withdrawal: The user takes back the coin previously deposited, and nullifies the corresponding note. 
 * Execute: The user calls the NFT contract's function through the relayer contract.
 
-Both `register` and `execute` require the user generate zero-knowledge proof to transfer notes to the relayer as transaction fees.
+Both `withdrawal` and `execute` require the user generate a zero-knowledge proof. The `withdrawal` will send the coin back to the user. The `execute` will transfer notes to the relayer as transaction fees.
 
 ## Build circuits
 
@@ -17,7 +17,11 @@ sh circuits/build.sh
 ## Build contract
 
 ```sh
-sh contracts/build.sh
+cd contracts/anonymous
+cargo build --release
+
+cd ../verifier
+cargo build --release
 ```
 
 ## Test contract
