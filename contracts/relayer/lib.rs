@@ -106,6 +106,9 @@ pub mod relayer {
             if self.nullifier_hashes.contains(nullifier_hash.clone()) {
                 return Err(Error::AlreadySpent);
             }
+            if self.verifier == AccountId::from([0;32]) {
+              return Err(Error::VerifyFailed);
+            }
             let selector: [u8; 4] = [0x18, 0x60, 0xff, 0x3b];
             let verify_result: bool =
                 ink_env::call::build_call::<ink_env::DefaultEnvironment>()
@@ -264,7 +267,7 @@ pub mod relayer {
             let refund = 2000000000u128;
             let commitment = String::from(COMMITMENT);
             relayer.deposit(commitment).unwrap();
-            relayer
+            assert_eq!(relayer
                 .withdraw(
                     proof,
                     root,
@@ -273,9 +276,8 @@ pub mod relayer {
                     relayer_account,
                     fee,
                     refund,
-                )
-                .unwrap();
-            assert!(relayer.nullifier_hashes.get(nullifier_hash).unwrap());
+                ), Err(Error::VerifyFailed));
+            assert_eq!(relayer.nullifier_hashes.contains(nullifier_hash), false);
         }
 
         #[ink::test]
