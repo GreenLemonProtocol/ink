@@ -39,18 +39,12 @@ npm install -d
 
 ## Contract build & test
 
-#### Contract anonymous
 ```
-cd contracts/anonymous
-cargo build --release
-cargo +nightly contract test
-```
+cargo build --manifest-path anonymous/Cargo.toml
+cargo test --manifest-path anonymous/Cargo.toml
 
-#### Contract verifier
-```
-cd ../verifier
-cargo build --release
-cargo +nightly contract test
+cargo build --manifest-path verifier/Cargo.toml
+cargo test --manifest-path verifier/Cargo.toml
 ```
 
 #### Generate docs
