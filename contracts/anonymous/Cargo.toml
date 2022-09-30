@@ -17,7 +17,7 @@ scale = { package = "parity-scale-codec", version = "3", default-features = fals
 scale-info = { version = "2", default-features = false, features = ["derive"], optional = true }
 
 # zk library
-zkp-u256 = { git = "https://github.com/kay404/OpenZKP", branch = "master", default-features = false }
+zkp-u256 = { git = "https://github.com/GreenLemonProtocol/OpenZKP", branch = "master", default-features = false }
 hex = { version = "0.4.3", default-features = false, features = ["alloc"] }
 
 [lib]

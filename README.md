@@ -40,6 +40,7 @@ npm install -d
 ## Contract build & test
 
 ```
+cd contracts
 cargo build --manifest-path anonymous/Cargo.toml
 cargo test --manifest-path anonymous/Cargo.toml
 
