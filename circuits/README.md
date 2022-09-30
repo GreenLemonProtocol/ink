@@ -28,4 +28,4 @@ pub static VK: [&str; 14] = [];
 pub static VK_GAMMA_ABC: [&str; 18] = [];
 ```
 
-**Warnning**: proving scheme only support groth16 for now.
+**Note**: proving scheme only support groth16 for now.

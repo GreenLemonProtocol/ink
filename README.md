@@ -18,33 +18,43 @@ The relayer contract contains three functions: deposit, withdrawal, and execute.
 
 Both `withdrawal` and `execute` require the user generate a zero-knowledge proof. The `withdrawal` will send the coin back to the user. The `execute` will transfer notes to the relayer as transaction fees.
 
-## Build circuits
+## Install
+If you are a new talent for Polkadot blockchain or Node.js, please install the environment first.
+
+[Download substrate-greenlemon-node](https://github.com/GreenLemonProtocol/substrate-contracts-node/releases)
+The substrate-greenlemon-node is a new version of the substrate after increased MAXIMUM_BLOCK_WEIGHT. The default value of MAXIMUM_BLOCK_WEIGHT is too low to verify zero-knowledge proof on-chain.
+
+[Install Node.js environment](https://nodejs.org/en/download/)
+
+[Install Zokrates](https://zokrates.github.io/gettingstarted.html)
+
+Please [install cargo-contract](https://github.com/paritytech/cargo-contract) before build contracts, because we need to add nightly builds to runtime env & install binaryen in a version >= 99.
+
 
 ```
-sh circuits/build.sh
+# Install project dependencies
+npm install -d
 ```
 
-## Build contract
+## Contract build & test
 
+#### Contract anonymous
 ```
 cd contracts/anonymous
 cargo build --release
+cargo +nightly contract test
+```
 
+#### Contract verifier
+```
 cd ../verifier
 cargo build --release
-```
-
-## Test contract
-
-```
 cargo +nightly contract test
 ```
 
 ## Deploy contract
 
-1. deploy verifier contract
-
-2. deploy anonymous contract with verifier contract account id
+Upload compiled contract `anonymous` and `verifier` to local node by [Polkadot/Substrate Portal](https://polkadot.js.org/apps/#/explorer).
 
 ## Generate docs
 
@@ -52,6 +62,7 @@ cargo +nightly contract test
 cargo doc --open
 ```
 
+## Test
 ## Generate commitment
 
 ```
