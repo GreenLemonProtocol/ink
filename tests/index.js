@@ -25,12 +25,11 @@ const LEVEL = 10;
   //   0xb7, 0x5d, 0x3a, 0xaf, 0x2d, 0x9b, 0x51,
   // ]);
   let commitment = mimcHash(rbigint(nullifier), rbigint(secret));
-  console.log("commitment:", commitment.toString(16));
   // construct a merkle tree, it contains one leaf for this example
   let leaves = [commitment];
   let tree = new merkleTree();
   tree.init(LEVEL, leaves, { hashFunction: mimcHash });
-  console.log(tree.root().toString())
+  // console.log(tree.root().toString())
   // return
   let nullifierHash = mimcHash(rbigint(nullifier));
 
@@ -67,7 +66,20 @@ const LEVEL = 10;
     ...pathIndices,
   ];
   console.log("witness inputs:\n" + inputs.toString().replace(/,/g, ' '));
+  console.log("commitment:", commitment.toString(16));
 
+  // public inputs for ink! contract to withdraw
+  console.log('root:', tree.root().toString(16));
+  console.log('nullifierHash:', nullifierHash.toString(16));
+  console.log('recipient:', recipient);
+  console.log('relayer:', relayer);
+  console.log('fee:', fee);
+  console.log('refund:', refund);
+  return;
+
+  ///////////////////////////////
+  // Generate Proof
+  ///////////////////////////////
   // initialize zokrates provider
   let zokratesProvider = await initialize();
   const artifacts = {
@@ -99,8 +111,8 @@ const LEVEL = 10;
   console.log(
     'proof:',
     to_g1(proofAndInput.proof.a) +
-      to_g2(proofAndInput.proof.b) +
-      to_g1(proofAndInput.proof.c)
+    to_g2(proofAndInput.proof.b) +
+    to_g1(proofAndInput.proof.c)
   );
   // public inputs for ink! contract to withdraw
   console.log('root:', tree.root().toString(16));

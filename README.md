@@ -22,6 +22,7 @@ Both `withdrawal` and `execute` require the user generate a zero-knowledge proof
 If you are a new talent for Polkadot blockchain or Node.js, please install the environment first.
 
 [Download substrate-greenlemon-node](https://github.com/GreenLemonProtocol/substrate-contracts-node/releases)
+
 The substrate-greenlemon-node is a new version of the substrate after increased MAXIMUM_BLOCK_WEIGHT. The default value of MAXIMUM_BLOCK_WEIGHT is too low to verify zero-knowledge proof on-chain.
 
 [Install Node.js environment](https://nodejs.org/en/download/)
@@ -52,32 +53,26 @@ cargo build --release
 cargo +nightly contract test
 ```
 
-## Deploy contract
-
-Upload compiled contract `anonymous` and `verifier` to local node by [Polkadot/Substrate Portal](https://polkadot.js.org/apps/#/explorer).
-
-## Generate docs
+#### Generate docs
 
 ```
 cargo doc --open
 ```
 
+## Deploy contract
+
+Upload compiled contract `anonymous` and `verifier` to local node by [Polkadot/Substrate Portal](https://polkadot.js.org/apps/#/explorer).
+
 ## Test
-## Generate commitment
+#### Generate commitment
 
 ```
 node tests/index.js
 ```
 
-## Generate proof by zokrates
+#### Generate proof by zokrates
 
-1、compute witness
-
-```
-node tests/index.js
-```
-
-copy `witness inputs`
+1、copy `witness inputs` which outputted earlier
 
 ```
 cd build
@@ -88,4 +83,10 @@ zokrates compute-witness -a COPY_WITNESS_INPUTS
 
 ```
 zokrates generate-proof
+```
+
+3、verify proof
+
+```
+zokrates verify
 ```
