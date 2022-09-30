@@ -2,11 +2,9 @@
 use ink_lang as ink;
 
 pub mod constants;
-// pub mod generators;
-// pub mod jubjub;
 
 #[ink::contract]
-mod anonymous {
+pub mod relayer {
     use crate::constants::{IV, SCALAR_FIELD, ZEROS};
     use ink_prelude::{string::String, vec, vec::Vec};
     use ink_storage::{traits::SpreadAllocate, Mapping};
@@ -45,7 +43,7 @@ mod anonymous {
     const ROOT_HISTORY_SIZE: u32 = 30;
     #[ink(storage)]
     #[derive(SpreadAllocate)]
-    pub struct Anonymous {
+    pub struct Relayer {
         // Stores the ZK result
         pub verifier: AccountId,
         pub commitments: Mapping<String, bool>,
@@ -57,7 +55,7 @@ mod anonymous {
         pub next_index: u32,
     }
 
-    impl Anonymous {
+    impl Relayer {
         #[ink(constructor)]
         pub fn new(levels: u32, verifier: AccountId) -> Self {
             ink_lang::utils::initialize_contract(|contract| {
@@ -237,17 +235,17 @@ mod anonymous {
         #[ink::test]
         fn test_deposit() {
             let accounts = default_accounts::<DefaultEnvironment>();
-            let mut anonymous = Anonymous::new(10, AccountId::from([0;32]));
+            let mut relayer = Relayer::new(10, AccountId::from([0;32]));
             test::set_caller::<DefaultEnvironment>(accounts.alice);
             let commitment = String::from(COMMITMENT);
             let root = String::from(ROOT);
-            anonymous.deposit(commitment).unwrap();
-            assert!(anonymous.is_known_root(root));
+            relayer.deposit(commitment).unwrap();
+            assert!(relayer.is_known_root(root));
         }
 
         #[ink::test]
         fn test_withdraw() {
-            let mut anonymous = Anonymous::new(10, AccountId::from([0;32]));
+            let mut relayer = Relayer::new(10, AccountId::from([0;32]));
             let proof: String = String::from(PROOF);
             let root: String = String::from(ROOT);
             let nullifier_hash: String = String::from(NULLIFIER_HASH);
@@ -257,27 +255,27 @@ mod anonymous {
                 133, 88, 133, 76, 205, 227, 154, 86, 132, 231, 165, 109, 162, 125,
             ]);
 
-            // the recipient SS58Address is "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty"
-            let relayer = AccountId::from([
+            // the relayer_account SS58Address is "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty"
+            let relayer_account = AccountId::from([
                 142, 175, 4, 21, 22, 135, 115, 99, 38, 201, 254, 161, 126, 37, 252, 82, 135, 97,
                 54, 147, 201, 18, 144, 156, 178, 38, 170, 71, 148, 242, 106, 72,
             ]);
             let fee = 1000000000u128;
             let refund = 2000000000u128;
             let commitment = String::from(COMMITMENT);
-            anonymous.deposit(commitment).unwrap();
-            anonymous
+            relayer.deposit(commitment).unwrap();
+            relayer
                 .withdraw(
                     proof,
                     root,
                     nullifier_hash.clone(),
                     recipient,
-                    relayer,
+                    relayer_account,
                     fee,
                     refund,
                 )
                 .unwrap();
-            assert!(anonymous.nullifier_hashes.get(nullifier_hash).unwrap());
+            assert!(relayer.nullifier_hashes.get(nullifier_hash).unwrap());
         }
 
         #[ink::test]
@@ -286,9 +284,9 @@ mod anonymous {
             let inputs = vec![String::from(
                 "471424a3bb441fde5e66071c0d74bac794d700cb8dbb8f1a996360870bc6ae",
             )];
-            let anonymous = Anonymous::new(10, AccountId::from([0;32]));
+            let relayer = Relayer::new(10, AccountId::from([0;32]));
             // println!("pow: {}", u64::pow(2, 10));
-            anonymous.mimc_sponge(inputs);
+            relayer.mimc_sponge(inputs);
         }
     }
 }

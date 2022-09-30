@@ -1,6 +1,6 @@
 
 [package]
-name = "anonymous"
+name = "relayer"
 version = "0.1.0"
 authors = ["[your_name] <[your_email]>"]
 edition = "2018"
@@ -21,7 +21,7 @@ zkp-u256 = { git = "https://github.com/GreenLemonProtocol/OpenZKP", branch = "ma
 hex = { version = "0.4.3", default-features = false, features = ["alloc"] }
 
 [lib]
-name = "anonymous"
+name = "relayer"
 path = "lib.rs"
 crate-type = [
 	# Used for normal contract Wasm blobs.

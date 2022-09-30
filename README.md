@@ -41,8 +41,8 @@ npm install -d
 
 ```
 cd contracts
-cargo build --manifest-path anonymous/Cargo.toml
-cargo test --manifest-path anonymous/Cargo.toml
+cargo build --manifest-path relayer/Cargo.toml
+cargo test --manifest-path relayer/Cargo.toml
 
 cargo build --manifest-path verifier/Cargo.toml
 cargo test --manifest-path verifier/Cargo.toml
@@ -56,7 +56,7 @@ cargo doc --open
 
 ## Deploy contract
 
-Upload compiled contract `anonymous` and `verifier` to local node by [Polkadot/Substrate Portal](https://polkadot.js.org/apps/#/explorer).
+Upload compiled contract `relayer` and `verifier` to local node by [Polkadot/Substrate Portal](https://polkadot.js.org/apps/#/explorer).
 
 ## Test
 #### Generate commitment
