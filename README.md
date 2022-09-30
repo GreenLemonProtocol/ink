@@ -1,4 +1,14 @@
-# Relayer Contract
+# Green Lemon Protocol
+
+The Green Lemon Protocol is an anonymous NFT platform based on zero-knowledge proof and dual-key stealth address protocol. Anyone can deploy their own anonymous NFT contract and share the same relayer service.
+
+The platform contains two core contracts. NFT contract and relayer contract.
+
+Quick facts:
+* NFT contract hiding token owners based on dual-key stealth address protocol
+* Send anonymous transactions to relayer contract based on zero-knowledge proof
+
+Please click[The DKSAP implementation for the Polkadot ecosystem](https://github.com/GreenLemonProtocol/dksap-polkadot) to read more information about NFT contract.
 
 The relayer contract contains three functions: deposit, withdrawal, and execute.
 
