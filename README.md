@@ -62,7 +62,7 @@ Upload compiled contract `relayer` and `verifier` to local node by [Polkadot/Sub
 #### Generate commitment
 
 ```
-node tests/index.js
+node tests/1-generateCommitment.js
 ```
 
 #### Generate proof by zokrates

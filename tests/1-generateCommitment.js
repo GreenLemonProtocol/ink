@@ -66,6 +66,7 @@ const LEVEL = 10;
     ...pathIndices,
   ];
   console.log("witness inputs:\n" + inputs.toString().replace(/,/g, ' '));
+  console.log();
   console.log("commitment:", commitment.toString(16));
 
   // public inputs for ink! contract to withdraw
@@ -75,52 +76,44 @@ const LEVEL = 10;
   console.log('relayer:', relayer);
   console.log('fee:', fee);
   console.log('refund:', refund);
-  return;
 
-  ///////////////////////////////
-  // Generate Proof
-  ///////////////////////////////
-  // initialize zokrates provider
-  let zokratesProvider = await initialize();
-  const artifacts = {
-    program: Array.from(fs.readFileSync(path.join(__dirname + '/../build/out'))),
-    abi: fs.readFileSync(path.join(__dirname + '/../build/abi.json')).toString(),
-  };
+  // ///////////////////////////////
+  // // Generate Proof
+  // ///////////////////////////////
+  // // initialize zokrates provider
+  // let zokratesProvider = await initialize();
+  // const artifacts = {
+  //   program: Array.from(fs.readFileSync(path.join(__dirname + '/../build/out'))),
+  //   abi: fs.readFileSync(path.join(__dirname + '/../build/abi.json')).toString(),
+  // };
 
-  console.log('\nstart generating zero-knowledge proof, it takes about 1 minute.\n');
-  // compute witness
-  const { witness } = zokratesProvider.computeWitness(artifacts, inputs);
+  // console.log('\nstart generating zero-knowledge proof, it takes about 1 minute.\n');
+  // // compute witness
+  // const { witness } = zokratesProvider.computeWitness(artifacts, inputs);
 
-  // generate zk proof
-  let provingKey = Array.from(fs.readFileSync(path.join(__dirname + '/../build/proving.key')));
-  const proofAndInput = zokratesProvider.generateProof(
-    artifacts.program,
-    witness,
-    provingKey
-  );
+  // // generate zk proof
+  // let provingKey = Array.from(fs.readFileSync(path.join(__dirname + '/../build/proving.key')));
+  // const proofAndInput = zokratesProvider.generateProof(
+  //   artifacts.program,
+  //   witness,
+  //   provingKey
+  // );
 
-  // zk proof verify
-  const verificationKey = JSON.parse(
-    fs.readFileSync(path.join(__dirname + '/../build/verification.key'))
-  );
-  const isVerified = zokratesProvider.verify(verificationKey, proofAndInput);
-  assert(isVerified);
-  // console.log(proofAndInput);
+  // // zk proof verify
+  // const verificationKey = JSON.parse(
+  //   fs.readFileSync(path.join(__dirname + '/../build/verification.key'))
+  // );
+  // const isVerified = zokratesProvider.verify(verificationKey, proofAndInput);
+  // assert(isVerified);
+  // // console.log(proofAndInput);
 
-  // proof for ink! contract to withdraw
-  console.log(
-    'proof:',
-    to_g1(proofAndInput.proof.a) +
-    to_g2(proofAndInput.proof.b) +
-    to_g1(proofAndInput.proof.c)
-  );
-  // public inputs for ink! contract to withdraw
-  console.log('root:', tree.root().toString(16));
-  console.log('nullifierHahs:', nullifierHash.toString(16));
-  console.log('recipient:', recipient);
-  console.log('relayer:', relayer);
-  console.log('fee:', fee);
-  console.log('refund:', refund);
+  // // proof for ink! contract to withdraw
+  // console.log(
+  //   'proof:',
+  //   to_g1(proofAndInput.proof.a) +
+  //   to_g2(proofAndInput.proof.b) +
+  //   to_g1(proofAndInput.proof.c)
+  // );
 })();
 
 // decode hex to Buffer and reverse

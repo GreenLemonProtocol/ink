@@ -222,6 +222,7 @@ pub mod relayer {
     mod tests {
 
         /// Imports all the definitions from the outer scope so we can use them here.
+        // The test environment does not support elliptic curve APIs, so public keys and signatures have to be hard-coded for test purposes.
         use super::*;
         use ink_env::{
             self,
