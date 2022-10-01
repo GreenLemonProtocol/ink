@@ -13,26 +13,15 @@ const LEVEL = 10;
 (async () => {
   // zokrates field value can only hold 254 bits
   let nullifier = crypto.randomBytes(31);
-  // let nullifier = Buffer.from([
-  //   0x47, 0x14, 0x24, 0xa3, 0xbb, 0x44, 0x1f, 0xde, 0x5e, 0x66, 0x07, 0x1c,
-  //   0x0d, 0x74, 0xba, 0xc7, 0x94, 0xd7, 0x00, 0xcb, 0x8d, 0xbb, 0x8f, 0x1a,
-  //   0x99, 0x63, 0x60, 0x87, 0x0b, 0xc6, 0xae,
-  // ]);
   let secret = crypto.randomBytes(31);
-  // let secret = Buffer.from([
-  //   0x4d, 0x95, 0x45, 0xe1, 0x51, 0x7b, 0x6e, 0x70, 0x35, 0x7d, 0x09, 0xd9,
-  //   0x61, 0x76, 0xe2, 0x17, 0x73, 0x06, 0x6a, 0xf8, 0x3d, 0x22, 0x3a, 0xd3,
-  //   0xb7, 0x5d, 0x3a, 0xaf, 0x2d, 0x9b, 0x51,
-  // ]);
   let commitment = mimcHash(rbigint(nullifier), rbigint(secret));
   // construct a merkle tree, it contains one leaf for this example
   let leaves = [commitment];
   let tree = new merkleTree();
   tree.init(LEVEL, leaves, { hashFunction: mimcHash });
-  // console.log(tree.root().toString())
-  // return
   let nullifierHash = mimcHash(rbigint(nullifier));
 
+  // init merkle tree
   let index = 0;
   const { pathElements, pathIndices } = tree.path(index);
   let pathE = [[], [], []];
@@ -40,12 +29,15 @@ const LEVEL = 10;
     pathE[i] = pathElements[i].toString();
   }
   pathE = pathE.flat(Infinity);
+
+  // params
   let recipient = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
   let receiptArray = polkadotCrypto.decodeAddress(recipient);
   let relayer = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty';
   let relayerArray = polkadotCrypto.decodeAddress(relayer);
   let fee = '1000000000';
   let refund = '2000000000';
+
   for (let i = 0; i < pathIndices.length; ++i) {
     pathIndices[i] = pathIndices[i].toString();
   }
@@ -65,17 +57,30 @@ const LEVEL = 10;
     ...pathE,
     ...pathIndices,
   ];
-  console.log("witness inputs:\n" + inputs.toString().replace(/,/g, ' '));
-  console.log();
-  console.log("commitment:", commitment.toString(16));
 
-  // public inputs for ink! contract to withdraw
-  console.log('root:', tree.root().toString(16));
-  console.log('nullifierHash:', nullifierHash.toString(16));
-  console.log('recipient:', recipient);
-  console.log('relayer:', relayer);
-  console.log('fee:', fee);
-  console.log('refund:', refund);
+  // format output data
+  const commitmentString = commitment.toString(16);
+  const output = {
+    "witness inputs": inputs.toString().replace(/,/g, ' '),
+    "commitmentString": commitmentString,
+    // public inputs for ink! contract to withdraw
+    "root": tree.root().toString(16),
+    "nullifierHash": nullifierHash.toString(16),
+    "recipient": recipient,
+    "relayer": relayer,
+    "fee": fee,
+    "refund": refund,
+  }
+
+  console.log(output);
+
+  // Save file to config directory
+  // Get current directory
+  const parentDir = path.resolve(__dirname, '..');
+  const outputFile = path.resolve(parentDir, './build/output.json');
+
+  await fs.writeFileSync(outputFile, JSON.stringify(output));
+  console.log('The commitment has been generated successfully, located in ' + outputFile);
 
   // ///////////////////////////////
   // // Generate Proof
