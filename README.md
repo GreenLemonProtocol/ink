@@ -16,7 +16,7 @@ The relayer contract contains three functions: deposit, withdrawal, and execute.
 
 Both `withdrawal` and `execute` require the user generate a zero-knowledge proof. The `withdrawal` will send the coin back to the user. The `execute` will transfer coin to the relayer as transaction fees.
 
-## Install
+### Install
 If you are a new talent for Polkadot blockchain or Node.js, please install the DEV environment first.
 
 * Download [substrate-greenlemon-node](https://github.com/GreenLemonProtocol/substrate-contracts-node/releases). The substrate-greenlemon-node is a new version of the substrate after increased MAXIMUM_BLOCK_WEIGHT. The default value of MAXIMUM_BLOCK_WEIGHT is too low to verify zero-knowledge proof on-chain.
@@ -25,7 +25,9 @@ If you are a new talent for Polkadot blockchain or Node.js, please install the D
 * [Install cargo-contract](https://github.com/paritytech/cargo-contract), because we need to add nightly builds to Rust runtime env & install binaryen in a version >= 99.
 * Install tests dependencies. `npm install -d`
 
-## Contract build & test
+### Contract build & test
+
+Contract relayer & Contract verifier
 
 ```
 cd contracts
@@ -42,30 +44,30 @@ cargo test --manifest-path verifier/Cargo.toml
 cargo doc --open
 ```
 
-## Deploy contract
+### Deploy contract to local node
 
 Upload compiled contract `relayer` and `verifier` to local node by [Polkadot/Substrate Portal](https://polkadot.js.org/apps/#/explorer).
 
-## Test
-#### Generate commitment
+### Test
+#### 1.Generate commitment
 
 ```
 node tests/1-generateCommitment.js
 ```
 
-#### Compute witness
+#### 2.Compute witness
 
 ```
 node tests/2-compute-witness.js
 ```
 
-#### Generate zero knowledge proof
+#### 3.Generate zero knowledge proof
 
 ```
 node tests/3-generate-proof.js
 ```
 
-#### Verify zero knowledge proof off-chain
+#### 4.Verify zero knowledge proof off-chain
 
 ```
 node tests/4-verify-proof-offchain.js
