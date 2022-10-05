@@ -65,23 +65,20 @@ Upload compiled contract `relayer` and `verifier` to local node by [Polkadot/Sub
 node tests/1-generateCommitment.js
 ```
 
-#### Generate proof by zokrates
-
-1、copy `witness inputs` which outputted earlier
+#### Compute witness
 
 ```
-cd build
-zokrates compute-witness -a COPY_WITNESS_INPUTS
+node tests/2-compute-witness.js
 ```
 
-2、generate proof
+#### Generate zero knowledge proof
 
 ```
-zokrates generate-proof
+node tests/3-generate-proof.js
 ```
 
-3、verify proof
+#### Verify zero knowledge proof off-chain
 
 ```
-zokrates verify
+node tests/4-verify-proof-offchain.js
 ```
