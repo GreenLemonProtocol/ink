@@ -37,10 +37,12 @@ pub mod relayer {
         AlreadySpent,
         InvalidWithdrawProof,
         VerifyFailed,
-        BadLength,
+        BadLength
     }
 
-    const ROOT_HISTORY_SIZE: u32 = 30;
+    const ROOT_HISTORY_SIZE: u32 = 30; // merkle tree history size
+    const DEPOSIT_AMOUNT: Balance = 1; // required deposit amount
+
     #[ink(storage)]
     #[derive(SpreadAllocate)]
     pub struct Relayer {
@@ -74,11 +76,14 @@ pub mod relayer {
                 .insert(0, &String::from(ZEROS[(levels - 1) as usize]));
         }
 
-        #[ink(message)]
+        #[ink(message, payable)]
         pub fn deposit(&mut self, commitment: String) -> Result<u32, Error> {
             if self.commitments.contains(commitment.clone()) {
                 return Err(Error::AlreadySubmitted);
             }
+            // Detect transferred token amount
+            assert!(self.env().transferred_value() == DEPOSIT_AMOUNT, "invalid deposit amount!");
+
             let inserted_index = self.insert(commitment.clone())?;
             self.commitments.insert(commitment.clone(), &true);
             Self::env().emit_event(Deposit {
@@ -239,10 +244,17 @@ pub mod relayer {
         #[ink::test]
         fn test_deposit() {
             let accounts = default_accounts::<DefaultEnvironment>();
-            let mut relayer = Relayer::new(10, AccountId::from([0;32]));
+
+            // Payable
+            let mut relayer = Relayer::new(10, AccountId::from([0;32]));            
             test::set_caller::<DefaultEnvironment>(accounts.alice);
+            test::set_balance::<DefaultEnvironment>(accounts.alice, 10);
+            test::set_value_transferred::<DefaultEnvironment>(1);
+            
+            // Init commitment
             let commitment = String::from(COMMITMENT);
             let root = String::from(ROOT);
+
             relayer.deposit(commitment).unwrap();
             assert!(relayer.is_known_root(root));
         }
@@ -267,6 +279,13 @@ pub mod relayer {
             let fee = 1000000000u128;
             let refund = 2000000000u128;
             let commitment = String::from(COMMITMENT);
+
+            // Payable
+            let accounts = default_accounts::<DefaultEnvironment>();
+            test::set_caller::<DefaultEnvironment>(accounts.alice);
+            test::set_balance::<DefaultEnvironment>(accounts.alice, 10);
+            test::set_value_transferred::<DefaultEnvironment>(1);
+
             relayer.deposit(commitment).unwrap();
             assert_eq!(relayer
                 .withdraw(
