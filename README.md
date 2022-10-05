@@ -5,10 +5,8 @@ The Green Lemon Protocol is an anonymous decentralized application platform base
 The platform contains two core contracts for now. Anonymous NFT contract and relayer contract.
 
 Quick facts:
-* Anonymous NFT contract hiding token owners based on dual-key stealth address protocol
+* Anonymous NFT contract hiding token owners based on [dual-key stealth address protocol](https://github.com/GreenLemonProtocol/dksap-polkadot)
 * Send anonymous transactions to relayer contract based on zero-knowledge proof
-
-Click [The DKSAP implementation for the Polkadot ecosystem](https://github.com/GreenLemonProtocol/dksap-polkadot) to read more information about anonymous NFT contract.
 
 The relayer contract contains three functions: deposit, withdrawal, and execute.
 
@@ -16,24 +14,25 @@ The relayer contract contains three functions: deposit, withdrawal, and execute.
 * Withdrawal: The user takes back the coin previously deposited, and nullifies the corresponding note. 
 * Execute: The user calls the NFT contract's function through the relayer contract.
 
-Both `withdrawal` and `execute` require the user generate a zero-knowledge proof. The `withdrawal` will send the coin back to the user. The `execute` will transfer notes to the relayer as transaction fees.
+Both `withdrawal` and `execute` require the user generate a zero-knowledge proof. The `withdrawal` will send the coin back to the user. The `execute` will transfer coin to the relayer as transaction fees.
 
 ## Install
 If you are a new talent for Polkadot blockchain or Node.js, please install the environment first.
 
-[Download substrate-greenlemon-node](https://github.com/GreenLemonProtocol/substrate-contracts-node/releases)
-
 The substrate-greenlemon-node is a new version of the substrate after increased MAXIMUM_BLOCK_WEIGHT. The default value of MAXIMUM_BLOCK_WEIGHT is too low to verify zero-knowledge proof on-chain.
+
+[Download substrate-greenlemon-node](https://github.com/GreenLemonProtocol/substrate-contracts-node/releases)
 
 [Install Node.js environment](https://nodejs.org/en/download/)
 
 [Install Zokrates](https://zokrates.github.io/gettingstarted.html)
 
-Please [install cargo-contract](https://github.com/paritytech/cargo-contract) before build contracts, because we need to add nightly builds to runtime env & install binaryen in a version >= 99.
+Add nightly builds to runtime env & install binaryen in a version >= 99.
 
+[Install cargo-contract](https://github.com/paritytech/cargo-contract)
 
+Install project dependencies
 ```
-# Install project dependencies
 npm install -d
 ```
 
