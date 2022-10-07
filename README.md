@@ -18,7 +18,7 @@ Both `withdrawal` and `execute` require the user generate a zero-knowledge proof
 
 ### Work flow
 
-<img src="./docs/GreenLemon.001.jpeg" width="100%">
+<img src="./docs/workflow.001.jpeg" width="150%">
 
 ### Install
 If you are a new talent for Polkadot blockchain or Node.js, please install the DEV environment first.
