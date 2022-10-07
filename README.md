@@ -16,6 +16,10 @@ The relayer contract contains three functions: deposit, withdrawal, and execute.
 
 Both `withdrawal` and `execute` require the user generate a zero-knowledge proof. The `withdrawal` will send the coin back to the user. The `execute` will transfer coin to the relayer as transaction fees.
 
+### Work flow
+
+<img src="./docs/GreenLemon.001.jpeg" width="100%">
+
 ### Install
 If you are a new talent for Polkadot blockchain or Node.js, please install the DEV environment first.
 
