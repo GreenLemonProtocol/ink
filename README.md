@@ -2,7 +2,14 @@
 
 The Green Lemon Protocol is an anonymous decentralized application platform based on zero-knowledge proof and dual-key stealth address protocol. Anyone can deploy their own anonymous smart contract and share the same relayer service. And NFT(ERC-721) is supported for now, ERC-20 is under development.
 
-The platform contains two core contracts for now. Anonymous NFT contract and relayer contract.
+This project was funded by the Web3 Foundation Grants Program.
+
+* [Proposal: Dual-Key Stealth Address Protocol](https://github.com/w3f/Grants-Program/pull/997)
+* [Proposal: Green Lemon Protocol🍋 - An anonymous NFT solution](https://github.com/w3f/Grants-Program/pull/1096)
+
+Medium articles about Green Lemon Protocol:
+
+* [Green Lemon Protocol — An anonymous NFT solution](https://medium.com/@wuyahuang/green-lemon-protocol-an-anonymous-nft-solution-2fad91cc8f48)
 
 Quick facts:
 * Anonymous NFT contract hiding token owners based on [dual-key stealth address protocol](https://github.com/GreenLemonProtocol/dksap-polkadot)
