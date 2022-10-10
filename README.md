@@ -34,7 +34,7 @@ If you are a new talent for Polkadot blockchain or Node.js, please install the D
 * [Install Node.js environment](https://nodejs.org/en/download/)
 * [Install Zokrates](https://zokrates.github.io/gettingstarted.html)
 * [Install cargo-contract](https://github.com/paritytech/cargo-contract), because we need to add nightly builds to Rust runtime env & install binaryen in a version >= 99.
-* Install tests dependencies. `npm install -d`
+* Install test dependencies. `npm install -d`
 
 ### Contract build & test
 
@@ -42,10 +42,10 @@ Contract relayer & Contract verifier
 
 ```
 cd contracts
-cargo +nightly contract build --manifest-path relayer/Cargo.toml
+cargo +nightly-2022-08-15 contract build --manifest-path relayer/Cargo.toml
 cargo test --manifest-path relayer/Cargo.toml
 
-cargo +nightly contract build --manifest-path verifier/Cargo.toml
+cargo +nightly-2022-08-15 contract build --manifest-path verifier/Cargo.toml
 cargo test --manifest-path verifier/Cargo.toml
 ```
 

@@ -103,7 +103,7 @@ pub mod relayer {
             recipient: AccountId,
             relayer: AccountId,
             fee: u128,
-            refund: u128,
+            refund: u128
         ) -> Result<(), Error> {
             if !self.is_known_root(root.clone()) {
                 return Err(Error::RootNotExist);
@@ -115,7 +115,8 @@ pub mod relayer {
               return Err(Error::VerifyFailed);
             }
             
-            // function verify() of contract verifier, copied from target/ink/metadata.json after contract verifier compiled
+            // The selector of function verify() from contract verifier, copied from target/ink/metadata.json after contract verifier compiled
+            // selector = 0x1860ff3b
             let selector: [u8; 4] = [0x18, 0x60, 0xff, 0x3b];
             let verify_result: bool =
                 ink_env::call::build_call::<ink_env::DefaultEnvironment>()
@@ -142,7 +143,7 @@ pub mod relayer {
                 return Err(Error::VerifyFailed);
             }
             self.nullifier_hashes.insert(nullifier_hash.clone(), &true);
-            // process_withdraw(recipient, relayer, fee, refund);
+            self.process_transfer(recipient, relayer, fee, refund);
             Self::env().emit_event(Withdrawal {
                 recipient,
                 nullifier_hash,
@@ -150,6 +151,22 @@ pub mod relayer {
                 fee,
             });
             Ok(())
+        }
+
+        /// Transfer token to relayer and recipient
+        fn process_transfer(&mut self, recipient: AccountId, relayer: AccountId, fee: u128, refund: u128) -> bool{
+          if self.env().transfer(relayer, fee).is_err() {
+            panic!(
+              "contract does not have sufficient free funds"
+            )
+          }
+
+          if self.env().transfer(recipient, refund).is_err() {
+            panic!(
+                "contract does not have sufficient free funds"
+            )
+          }
+          true
         }
 
         /// Whether the root is present in the root history
@@ -237,11 +254,11 @@ pub mod relayer {
             DefaultEnvironment,
         };
         use ink_lang as ink;
-        const ROOT: &str = "222eddf0a52aada170d89dd492bf939c6430d4e10c0bf2b843e6bde7ac46781f";
-        const COMMITMENT: &str = "078af378072d903d63ea375d80429a2c89f8cc80a5a3b543ecb22734a090e0c4";
+        const ROOT: &str = "1b68d520e3f0594a45d3b1ee6cff14962272b66547a218053beb57b07bf36bc4";
+        const COMMITMENT: &str = "5ad3068cfac36d516b1f4844ee0885940c670d5f4cdd9ff7826235476fdde3b";
         const NULLIFIER_HASH: &str =
-            "15bd4d1ea3140c2a717b781050a6dd46f93a056f8a7e2f40cfd30740a2444a95";
-        const PROOF: &str = "637a7593f81167bfd1de206da605e4454ed04c5b13c4086bf64ee2f49b172a0d442e74a38cecb3fb5ed5bf3aec01cdfb3e888b3001818122c479f0cf9947be0e004d488c687a6f8848464f29188e5d8ed3ec06c9a9be660cd542120e15f4f4ac1df265c5d1b823e08e03405f5c98124ea99106171d1a25403eece9223d84bc9c096248c23f97e6d8dff366346ed1291156882813bb88ad87552e04f6e8b0174d0f1967a8ce3406b897b21eee16a0892d8a70cf9f7a53470f95fdf792fef4e983290023ffc6cf4a55cf665b5cc05af0df6f00de98ca7ee7f7e81da6fea2a800dc0f27ed497a5dae7e1040db883cdbaaa3c7ab083cafe408954044ad54e0acd311602f00";
+            "299a100c01c4e16cc745af1091fb77e36621a24b36edec50cb7d1aee8c54304b";
+        const PROOF: &str = "881bc81785063689cea604fe6df802ffbad64344db5711e8b40b4ce5f7b001068189bbb27a9c980ba66d1c90d955849ea2eed93356e64819bd9f813c2481d510000a4dc82dbdda164e7a6931f02f7b59abcad786b4a081f0aca38e24beec92293017729df011542417d0bf8a18d93a4973fc78a2b61817aff346dc766c5d6d231bd5d3aa7e083815c9b0a9f3047c20aaa89f34f8b16d7e183d108ece6f92ed871f33bcf82fc1c75ca5319e26ef117261ce02dc3f133a9acfc2ad73d7008690832800cc5e9c949bf0d1a2ccb5b45419b21c749af5d163d10059b6662a1ae7c98ec82ad34d3ac58810f5ae7f27dfcaf0e4bdbbe0f50fd7c396845bf2d76f03363a8c0f00";
 
         #[ink::test]
         fn test_deposit() {
@@ -278,8 +295,8 @@ pub mod relayer {
                 142, 175, 4, 21, 22, 135, 115, 99, 38, 201, 254, 161, 126, 37, 252, 82, 135, 97,
                 54, 147, 201, 18, 144, 156, 178, 38, 170, 71, 148, 242, 106, 72,
             ]);
-            let fee = 1000000000u128;
-            let refund = 2000000000u128;
+            let fee = 500000000u128;
+            let refund = 500000000u128;
             let commitment = String::from(COMMITMENT);
 
             // Payable

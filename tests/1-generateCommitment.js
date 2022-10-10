@@ -35,8 +35,8 @@ const LEVEL = 10;
   let receiptArray = polkadotCrypto.decodeAddress(recipient);
   let relayer = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty';
   let relayerArray = polkadotCrypto.decodeAddress(relayer);
-  let fee = '1000000000';
-  let refund = '2000000000';
+  let fee = '500000000';
+  let refund = '500000000';
 
   for (let i = 0; i < pathIndices.length; ++i) {
     pathIndices[i] = pathIndices[i].toString();
@@ -61,7 +61,7 @@ const LEVEL = 10;
   // format output data
   const commitmentString = commitment.toString(16);
   const output = {
-    "witness inputs": inputs.toString().replace(/,/g, ' '),
+    "witnessInputs": inputs.toString().replace(/,/g, ' '),
     "commitmentString": commitmentString,
     // public inputs for ink! contract to withdraw
     "root": tree.root().toString(16),
@@ -111,42 +111,7 @@ const LEVEL = 10;
   // const isVerified = zokratesProvider.verify(verificationKey, proofAndInput);
   // assert(isVerified);
   // // console.log(proofAndInput);
-
-  // // proof for ink! contract to withdraw
-  // console.log(
-  //   'proof:',
-  //   to_g1(proofAndInput.proof.a) +
-  //   to_g2(proofAndInput.proof.b) +
-  //   to_g1(proofAndInput.proof.c)
-  // );
 })();
-
-// decode hex to Buffer and reverse
-function decodeHex(value) {
-  return Buffer.from(value.replace('0x', ''), 'hex').reverse();
-}
-
-// encode zk proof a and c to hex string
-function to_g1(g1) {
-  let buf = Buffer.concat([
-    decodeHex(g1[0]),
-    decodeHex(g1[1]),
-    Buffer.from([0]),
-  ]);
-  return buf.toString('hex');
-}
-
-// encode zk proof b to hex string
-function to_g2(g2) {
-  let buf = Buffer.concat([
-    decodeHex(g2[0][0]),
-    decodeHex(g2[0][1]),
-    decodeHex(g2[1][0]),
-    decodeHex(g2[1][1]),
-    Buffer.from([0]),
-  ]);
-  return buf.toString('hex');
-}
 
 // // 32 bytes hex string to uint32array, contains 8 elements
 // function toU32Array(hexString) {
