@@ -56,7 +56,8 @@ mod verifier {
                 VK,
                 VK_GAMMA_ABC.to_vec(),
                 proof_and_input.as_slice(),
-            ).unwrap()
+            )
+            .unwrap()
         }
 
         pub fn buff2input(&self, buffer: &[u8]) -> Vec<u8> {

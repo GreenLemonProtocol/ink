@@ -37,7 +37,7 @@ pub mod relayer {
         AlreadySpent,
         InvalidWithdrawProof,
         VerifyFailed,
-        BadLength
+        BadLength,
     }
 
     const ROOT_HISTORY_SIZE: u32 = 30; // merkle tree history size
@@ -82,7 +82,10 @@ pub mod relayer {
                 return Err(Error::AlreadySubmitted);
             }
             // Detect transferred token amount
-            assert!(self.env().transferred_value() == DEPOSIT_AMOUNT, "invalid deposit amount!");
+            assert!(
+                self.env().transferred_value() == DEPOSIT_AMOUNT,
+                "invalid deposit amount!"
+            );
 
             let inserted_index = self.insert(commitment.clone())?;
             self.commitments.insert(commitment.clone(), &true);
@@ -103,7 +106,7 @@ pub mod relayer {
             recipient: AccountId,
             relayer: AccountId,
             fee: u128,
-            refund: u128
+            refund: u128,
         ) -> Result<(), Error> {
             if !self.is_known_root(root.clone()) {
                 return Err(Error::RootNotExist);
@@ -111,34 +114,28 @@ pub mod relayer {
             if self.nullifier_hashes.contains(nullifier_hash.clone()) {
                 return Err(Error::AlreadySpent);
             }
-            if self.verifier == AccountId::from([0;32]) {
-              return Err(Error::VerifyFailed);
+            if self.verifier == AccountId::from([0; 32]) {
+                return Err(Error::VerifyFailed);
             }
-            
+
             // The selector of function verify() from contract verifier, copied from target/ink/metadata.json after contract verifier compiled
             // selector = 0x1860ff3b
             let selector: [u8; 4] = [0x18, 0x60, 0xff, 0x3b];
-            let verify_result: bool =
-                ink_env::call::build_call::<ink_env::DefaultEnvironment>()
-                    .call_type(
-                        ink_env::call::Call::new()
-                            .callee(self.verifier)
-                            .gas_limit(0)
-                            .transferred_value(0),
-                    )
-                    .exec_input(
-                        ink_env::call::ExecutionInput::new(ink_env::call::Selector::new(selector))
-                            .push_arg(proof)
-                            .push_arg(root)
-                            .push_arg(nullifier_hash.clone())
-                            .push_arg(recipient)
-                            .push_arg(relayer)
-                            .push_arg(fee)
-                            .push_arg(refund),
-                    )
-                    .call_flags(ink_env::CallFlags::default().set_allow_reentry(true))
-                    .returns::<bool>()
-                    .fire().unwrap();
+            let contract = self.verifier;
+            let verify_result = crate::call!(
+                contract,
+                selector,
+                proof,
+                root,
+                nullifier_hash.clone(),
+                recipient,
+                relayer,
+                fee,
+                refund
+            )
+            .returns::<bool>()
+            .fire()
+            .unwrap();
             if !verify_result {
                 return Err(Error::VerifyFailed);
             }
@@ -154,19 +151,21 @@ pub mod relayer {
         }
 
         /// Transfer token to relayer and recipient
-        fn process_transfer(&mut self, recipient: AccountId, relayer: AccountId, fee: u128, refund: u128) -> bool{
-          if self.env().transfer(relayer, fee).is_err() {
-            panic!(
-              "contract does not have sufficient free funds"
-            )
-          }
+        fn process_transfer(
+            &mut self,
+            recipient: AccountId,
+            relayer: AccountId,
+            fee: u128,
+            refund: u128,
+        ) -> bool {
+            if self.env().transfer(relayer, fee).is_err() {
+                panic!("contract does not have sufficient free funds")
+            }
 
-          if self.env().transfer(recipient, refund).is_err() {
-            panic!(
-                "contract does not have sufficient free funds"
-            )
-          }
-          true
+            if self.env().transfer(recipient, refund).is_err() {
+                panic!("contract does not have sufficient free funds")
+            }
+            true
         }
 
         /// Whether the root is present in the root history
@@ -265,11 +264,11 @@ pub mod relayer {
             let accounts = default_accounts::<DefaultEnvironment>();
 
             // Payable
-            let mut relayer = Relayer::new(10, AccountId::from([0;32]));            
+            let mut relayer = Relayer::new(10, AccountId::from([0; 32]));
             test::set_caller::<DefaultEnvironment>(accounts.alice);
             test::set_balance::<DefaultEnvironment>(accounts.alice, 10);
             test::set_value_transferred::<DefaultEnvironment>(1);
-            
+
             // Init commitment
             let commitment = String::from(COMMITMENT);
             let root = String::from(ROOT);
@@ -280,7 +279,7 @@ pub mod relayer {
 
         #[ink::test]
         fn test_withdraw() {
-            let mut relayer = Relayer::new(10, AccountId::from([0;32]));
+            let mut relayer = Relayer::new(10, AccountId::from([0; 32]));
             let proof: String = String::from(PROOF);
             let root: String = String::from(ROOT);
             let nullifier_hash: String = String::from(NULLIFIER_HASH);
@@ -306,8 +305,8 @@ pub mod relayer {
             test::set_value_transferred::<DefaultEnvironment>(1);
 
             relayer.deposit(commitment).unwrap();
-            assert_eq!(relayer
-                .withdraw(
+            assert_eq!(
+                relayer.withdraw(
                     proof,
                     root,
                     nullifier_hash.clone(),
@@ -315,7 +314,9 @@ pub mod relayer {
                     relayer_account,
                     fee,
                     refund,
-                ), Err(Error::VerifyFailed));
+                ),
+                Err(Error::VerifyFailed)
+            );
             assert_eq!(relayer.nullifier_hashes.contains(nullifier_hash), false);
         }
 
@@ -325,9 +326,102 @@ pub mod relayer {
             let inputs = vec![String::from(
                 "471424a3bb441fde5e66071c0d74bac794d700cb8dbb8f1a996360870bc6ae",
             )];
-            let relayer = Relayer::new(10, AccountId::from([0;32]));
+            let relayer = Relayer::new(10, AccountId::from([0; 32]));
             // println!("pow: {}", u64::pow(2, 10));
             relayer.mimc_sponge(inputs);
         }
     }
 }
+
+/// Returns a [`CallBuilder`] to a cross-contract call.
+///
+/// # Example
+///
+/// **Note:** The shown examples panic because there is currently no cross-calling
+///           support in the off-chain testing environment. However, this code
+///           should work fine in on-chain environments.
+///
+/// ## Example 1: No Return Value
+///
+/// The below example shows calling of a message of another contract that does
+/// not return any value back to its caller. The called function:
+///
+/// - has a selector equal to `0xDEADBEEF`
+/// - is provided with 5000 units of gas for its execution
+/// - is provided with 10 units of transferred value for the contract instance
+/// - receives the following arguments in order
+///    1. an `i32` with value `42`
+///    2. a `bool` with value `true`
+///
+/// ```should_panic
+/// # use ::ink_env::{
+/// #     Environment,
+/// #     DefaultEnvironment,
+/// #     call::{build_call, Selector, ExecutionInput}
+/// # };
+/// # use ink_env::call::Call;
+/// # type AccountId = <DefaultEnvironment as Environment>::AccountId;
+/// # type Balance = <DefaultEnvironment as Environment>::Balance;
+/// let contract_id = AccountId::from([0x42; 32]);
+/// let selector = [0xDE, 0xAD, 0xBE, 0xEF];
+/// let args_1 = 42u8;
+/// let args_2 = true;
+/// call!(contract_id, selector, args_1, args_2).returns::<()>().fire().unwrap();
+/// ```
+///
+/// ## Example 2: With Return Value
+///
+/// The below example shows calling of a message of another contract that does
+/// return a `i32` value back to its caller. The called function:
+///
+/// - has a selector equal to `0xDEADBEEF`
+/// - is provided with 5000 units of gas for its execution
+/// - is provided with 10 units of transferred value for the contract instance
+/// - receives the following arguments in order
+///    1. an `i32` with value `42`
+///    2. a `bool` with value `true`
+///    3. an array of 32 `u8` with value `0x10`
+///
+/// ```should_panic
+/// # use ::ink_env::{
+/// #     Environment,
+/// #     DefaultEnvironment,
+/// #     call::{build_call, Selector, ExecutionInput, Call},
+/// # };
+/// # type AccountId = <DefaultEnvironment as Environment>::AccountId;
+/// let contract_id = AccountId::from([0x42; 32]);
+/// let selector = [0xDE, 0xAD, 0xBE, 0xEF];
+/// let args_1 = 42u8;
+/// let args_2 = true;
+/// let args_3 = &[0x10u8; 32];
+/// let my_return_value: i32 = call!(
+///         contract_id,
+///         selector,
+///         args_1,
+///         args_2,
+///         args_3
+///     )
+///     .returns::<i32>()
+///     .fire()
+///     .unwrap();
+/// ```
+#[macro_export]
+macro_rules! call {
+        ( $contract:ident, $selector:ident, $( $arg:expr ),* ) => {
+            {
+                let args = ink_env::call::ExecutionInput::new(ink_env::call::Selector::new($selector));
+                $(
+                    let args = args.push_arg($arg);
+                )*
+                ink_env::call::build_call::<ink_env::DefaultEnvironment>()
+                    .call_type(
+                        ink_env::call::Call::new()
+                            .callee($contract)
+                            .gas_limit(0)
+                            .transferred_value(0),
+                    )
+                    .exec_input(args)
+                    .call_flags(ink_env::CallFlags::default().set_allow_reentry(true))
+            }
+        };
+    }
