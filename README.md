@@ -42,10 +42,10 @@ Contract relayer & Contract verifier
 
 ```
 cd contracts
-cargo build --manifest-path relayer/Cargo.toml
+cargo +nightly contract build --manifest-path relayer/Cargo.toml
 cargo test --manifest-path relayer/Cargo.toml
 
-cargo build --manifest-path verifier/Cargo.toml
+cargo +nightly contract build --manifest-path verifier/Cargo.toml
 cargo test --manifest-path verifier/Cargo.toml
 ```
 

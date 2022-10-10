@@ -114,6 +114,8 @@ pub mod relayer {
             if self.verifier == AccountId::from([0;32]) {
               return Err(Error::VerifyFailed);
             }
+            
+            // function verify() of contract verifier, copied from target/ink/metadata.json after contract verifier compiled
             let selector: [u8; 4] = [0x18, 0x60, 0xff, 0x3b];
             let verify_result: bool =
                 ink_env::call::build_call::<ink_env::DefaultEnvironment>()
