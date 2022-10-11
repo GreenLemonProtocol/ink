@@ -39,6 +39,7 @@ pub mod relayer {
         VerifyFailed,
         BadLength,
         ThirdContractExecutionFailed,
+        InvalidContractAddress,
     }
 
     #[derive(Encode, Decode, Debug, PartialEq, Eq, Copy, Clone)]
@@ -49,6 +50,17 @@ pub mod relayer {
         String
     }
 
+    #[derive(Encode, Decode, Debug, PartialEq, Eq, Copy, Clone)]
+    #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
+    pub enum NFTFunction {
+      Approve,
+      RegisterPublicKeys,
+      Transfer,
+      TransferFrom,
+      Mint,
+      Burn,
+     }
+     
     const ROOT_HISTORY_SIZE: u32 = 30; // merkle tree history size
     const DEPOSIT_AMOUNT: Balance = 1; // required deposit amount
 
@@ -119,8 +131,7 @@ pub mod relayer {
             fee: u128,
             refund: u128,
         ) -> Result<(), Error> {
-            self.withdraw(proof, root, nullifier_hash, recipient, relayer, fee, refund).unwrap();
-            Ok(())
+            return self.withdraw(proof, root, nullifier_hash, recipient, relayer, fee, refund);
         }
 
         #[ink(message)]
@@ -133,24 +144,28 @@ pub mod relayer {
             relayer: AccountId,
             fee: u128,
             refund: u128,
+            function: NFTFunction,
             selector: [u8; 4],
             params: Vec<Param>
         ) -> Result<(), Error> {
-          self.withdraw(proof, root, nullifier_hash, recipient, relayer, fee, refund).unwrap();
+          if self.withdraw(proof, root, nullifier_hash, recipient, relayer, fee, refund).is_err() {
+            panic!("withdraw failed")
+          }
 
-          // let contract = self.erc721;
-          // let call_result = crate::call!(
-          //     contract,
-          //     selector,
-          //     "",
-          // )
-          // .returns::<bool>()
-          // .fire()
-          // .unwrap();
-          // if !call_result {
-          //   return Err(Error::ThirdContractExecutionFailed);
-          // }
+          if self.erc721 == AccountId::from([0; 32]) {
+              return Err(Error::InvalidContractAddress);
+          }
 
+          let contract = self.verifier;
+
+          match function {
+            NFTFunction::Approve => crate::call!(contract, selector, params[0], params[1], params[2], params[3]).returns::<bool>().fire().unwrap(),
+            NFTFunction::RegisterPublicKeys => crate::call!(contract, selector, params[0], params[1], params[2]).returns::<bool>().fire().unwrap(),
+            NFTFunction::Transfer => crate::call!(contract, selector, params[0], params[1], params[2], params[3]).returns::<bool>().fire().unwrap(),
+            NFTFunction::TransferFrom => crate::call!(contract, selector, params[0], params[1], params[2], params[3], params[4]).returns::<bool>().fire().unwrap(),
+            NFTFunction::Mint => crate::call!(contract, selector, params[0], params[1]).returns::<bool>().fire().unwrap(),
+            NFTFunction::Burn => crate::call!(contract, selector, params[0], params[1]).returns::<bool>().fire().unwrap(),
+          };
           Ok(())
         }
 
@@ -172,7 +187,7 @@ pub mod relayer {
                 return Err(Error::AlreadySpent);
             }
             if self.verifier == AccountId::from([0; 32]) {
-                return Err(Error::VerifyFailed);
+                return Err(Error::InvalidContractAddress);
             }
 
             // The selector of function verify() from contract verifier, copied from target/ink/metadata.json after contract verifier compiled
@@ -321,7 +336,7 @@ pub mod relayer {
             let accounts = default_accounts::<DefaultEnvironment>();
 
             // Payable
-            let mut relayer = Relayer::new(10, AccountId::from([0; 32]));
+            let mut relayer = Relayer::new(10, AccountId::from([0; 32]), AccountId::from([0; 32]));
             test::set_caller::<DefaultEnvironment>(accounts.alice);
             test::set_balance::<DefaultEnvironment>(accounts.alice, 10);
             test::set_value_transferred::<DefaultEnvironment>(1);
@@ -336,7 +351,7 @@ pub mod relayer {
 
         #[ink::test]
         fn test_withdrawal() {
-            let mut relayer = Relayer::new(10, AccountId::from([0; 32]));
+            let mut relayer = Relayer::new(10, AccountId::from([0; 32]), AccountId::from([0; 32]));
             let proof: String = String::from(PROOF);
             let root: String = String::from(ROOT);
             let nullifier_hash: String = String::from(NULLIFIER_HASH);
@@ -372,7 +387,7 @@ pub mod relayer {
                     fee,
                     refund,
                 ),
-                Err(Error::VerifyFailed)
+                Err(Error::InvalidContractAddress)
             );
             assert_eq!(relayer.nullifier_hashes.contains(nullifier_hash), false);
         }
@@ -383,7 +398,7 @@ pub mod relayer {
             let inputs = vec![String::from(
                 "471424a3bb441fde5e66071c0d74bac794d700cb8dbb8f1a996360870bc6ae",
             )];
-            let relayer = Relayer::new(10, AccountId::from([0; 32]));
+            let relayer = Relayer::new(10, AccountId::from([0; 32]), AccountId::from([0; 32]));
             // println!("pow: {}", u64::pow(2, 10));
             relayer.mimc_sponge(inputs);
         }
