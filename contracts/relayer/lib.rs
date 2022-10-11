@@ -38,6 +38,15 @@ pub mod relayer {
         InvalidWithdrawProof,
         VerifyFailed,
         BadLength,
+        ThirdContractExecutionFailed,
+    }
+
+    #[derive(Encode, Decode, Debug, PartialEq, Eq, Copy, Clone)]
+    #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
+    pub enum Param{
+        TokenId,
+        AccountId,
+        String
     }
 
     const ROOT_HISTORY_SIZE: u32 = 30; // merkle tree history size
@@ -48,6 +57,7 @@ pub mod relayer {
     pub struct Relayer {
         // Stores the ZK result
         pub verifier: AccountId,
+        pub erc721: AccountId,
         pub commitments: Mapping<String, bool>,
         pub nullifier_hashes: Mapping<String, bool>,
         pub levels: u32,
@@ -59,15 +69,16 @@ pub mod relayer {
 
     impl Relayer {
         #[ink(constructor)]
-        pub fn new(levels: u32, verifier: AccountId) -> Self {
+        pub fn new(levels: u32, verifier: AccountId, erc721: AccountId) -> Self {
             ink_lang::utils::initialize_contract(|contract| {
-                Self::new_init(contract, levels, verifier);
+                Self::new_init(contract, levels, verifier, erc721);
             })
         }
 
-        fn new_init(&mut self, levels: u32, verifier: AccountId) {
+        fn new_init(&mut self, levels: u32, verifier: AccountId, erc721: AccountId) {
             self.levels = levels;
             self.verifier = verifier;
+            self.erc721 = erc721;
             for i in 0..levels {
                 self.filled_subtrees
                     .insert(i, &String::from(ZEROS[i as usize]));
@@ -98,7 +109,53 @@ pub mod relayer {
         }
 
         #[ink(message)]
-        pub fn withdraw(
+        pub fn withdrawal(
+            &mut self,
+            proof: String,
+            root: String,
+            nullifier_hash: String,
+            recipient: AccountId,
+            relayer: AccountId,
+            fee: u128,
+            refund: u128,
+        ) -> Result<(), Error> {
+            self.withdraw(proof, root, nullifier_hash, recipient, relayer, fee, refund).unwrap();
+            Ok(())
+        }
+
+        #[ink(message)]
+        pub fn execute(
+            &mut self,
+            proof: String,
+            root: String,
+            nullifier_hash: String,
+            recipient: AccountId,
+            relayer: AccountId,
+            fee: u128,
+            refund: u128,
+            selector: [u8; 4],
+            params: Vec<Param>
+        ) -> Result<(), Error> {
+          self.withdraw(proof, root, nullifier_hash, recipient, relayer, fee, refund).unwrap();
+
+          // let contract = self.erc721;
+          // let call_result = crate::call!(
+          //     contract,
+          //     selector,
+          //     "",
+          // )
+          // .returns::<bool>()
+          // .fire()
+          // .unwrap();
+          // if !call_result {
+          //   return Err(Error::ThirdContractExecutionFailed);
+          // }
+
+          Ok(())
+        }
+
+        /// Withdraw token from contract, and nullifier the note
+        fn withdraw(
             &mut self,
             proof: String,
             root: String,
@@ -278,7 +335,7 @@ pub mod relayer {
         }
 
         #[ink::test]
-        fn test_withdraw() {
+        fn test_withdrawal() {
             let mut relayer = Relayer::new(10, AccountId::from([0; 32]));
             let proof: String = String::from(PROOF);
             let root: String = String::from(ROOT);
@@ -306,7 +363,7 @@ pub mod relayer {
 
             relayer.deposit(commitment).unwrap();
             assert_eq!(
-                relayer.withdraw(
+                relayer.withdrawal(
                     proof,
                     root,
                     nullifier_hash.clone(),
