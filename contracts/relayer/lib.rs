@@ -366,7 +366,7 @@ pub mod relayer {
 /// let selector = [0xDE, 0xAD, 0xBE, 0xEF];
 /// let args_1 = 42u8;
 /// let args_2 = true;
-/// call!(contract_id, selector, args_1, args_2).returns::<()>().fire().unwrap();
+/// crate::call!(contract_id, selector, args_1, args_2).returns::<()>().fire().unwrap();
 /// ```
 ///
 /// ## Example 2: With Return Value
@@ -394,7 +394,7 @@ pub mod relayer {
 /// let args_1 = 42u8;
 /// let args_2 = true;
 /// let args_3 = &[0x10u8; 32];
-/// let my_return_value: i32 = call!(
+/// let my_return_value: i32 = crate::call!(
 ///         contract_id,
 ///         selector,
 ///         args_1,
