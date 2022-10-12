@@ -143,6 +143,7 @@ pub mod relayer {
                 .insert(0, &String::from(ZEROS[(levels - 1) as usize]));
         }
 
+        /// deposit coin into contract
         #[ink(message, payable)]
         pub fn deposit(&mut self, commitment: String) -> Result<u32, Error> {
             if self.commitments.contains(commitment.clone()) {
@@ -164,6 +165,7 @@ pub mod relayer {
             Ok(inserted_index)
         }
 
+        /// withdraw note to user
         #[ink(message)]
         pub fn withdrawal(
             &mut self,
@@ -178,6 +180,7 @@ pub mod relayer {
             return self.withdraw(proof, root, nullifier_hash, recipient, relayer, fee, refund);
         }
 
+        /// execute specified function of erc721 contract, and transfer note to relayer as transaction fees
         #[ink(message)]
         pub fn execute(
             &mut self,
@@ -203,8 +206,9 @@ pub mod relayer {
                 return Err(Error::InvalidContractAddress);
             }
 
-            let contract = self.verifier;
+            let contract = self.erc721;
 
+            // match function of erc721 contract 
             match function {
                 NFTFunction::Approve | NFTFunction::Transfer => {
                     let to = params[0].get_value::<AccountId>().unwrap();
@@ -308,8 +312,13 @@ pub mod relayer {
             if !verify_result {
                 return Err(Error::VerifyFailed);
             }
+            
+            // nullifier hash
             self.nullifier_hashes.insert(nullifier_hash.clone(), &true);
+
+            // transfer token to recipient and relayer
             self.process_transfer(recipient, relayer, fee, refund);
+
             Self::env().emit_event(Withdrawal {
                 recipient,
                 nullifier_hash,
@@ -351,6 +360,7 @@ pub mod relayer {
             false
         }
 
+        /// use mimc sponge to hash params
         pub fn mimc_sponge(&self, inputs: Vec<String>) -> U256 {
             let p = U256::from_decimal_str(SCALAR_FIELD).unwrap();
             let mut left = U256::ZERO;
@@ -376,6 +386,7 @@ pub mod relayer {
             left
         }
 
+        /// insert new leaf to merkle tree
         pub fn insert(&mut self, leaf: String) -> Result<u32, Error> {
             // self.next_index = nextndex;
             let next_index = self.next_index;
