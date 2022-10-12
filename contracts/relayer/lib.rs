@@ -42,25 +42,69 @@ pub mod relayer {
         InvalidContractAddress,
     }
 
-    #[derive(Encode, Decode, Debug, PartialEq, Eq, Copy, Clone)]
+    #[derive(Encode, Decode, Debug, PartialEq, Eq, Clone)]
     #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
-    pub enum Param{
-        TokenId,
-        AccountId,
-        String
+    pub enum Param {
+        TokenId(u32),
+        AccountId(AccountId),
+        String(String),
+    }
+
+    impl Param {
+        pub fn get_value<T: Value>(&self) -> Option<T::Type> {
+            T::get_value(self)
+        }
+    }
+
+    pub trait Value {
+        type Type;
+        fn get_value(type_value: &Param) -> Option<Self::Type>;
+    }
+
+    impl Value for u32 {
+        type Type = u32;
+        fn get_value(type_value: &Param) -> Option<Self::Type> {
+            if let Param::TokenId(val) = type_value {
+                Some(*val)
+            } else {
+                None
+            }
+        }
+    }
+
+    impl Value for String {
+        type Type = String;
+        fn get_value(type_value: &Param) -> Option<Self::Type> {
+            if let Param::String(val) = type_value.clone() {
+                Some(val)
+            } else {
+                None
+            }
+        }
+    }
+
+    impl Value for ink_env::AccountId {
+        type Type = AccountId;
+        fn get_value(type_value: &Param) -> Option<Self::Type> {
+            if let Param::AccountId(val) = type_value {
+                Some(*val)
+            } else {
+                None
+            }
+        }
     }
 
     #[derive(Encode, Decode, Debug, PartialEq, Eq, Copy, Clone)]
     #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
     pub enum NFTFunction {
-      Approve,
-      RegisterPublicKeys,
-      Transfer,
-      TransferFrom,
-      Mint,
-      Burn,
-     }
-     
+        Approve,
+        RegisterPublicKeys,
+        Transfer,
+        TransferFrom,
+        Mint,
+        Burn,
+    }
+
     const ROOT_HISTORY_SIZE: u32 = 30; // merkle tree history size
     const DEPOSIT_AMOUNT: Balance = 1; // required deposit amount
 
@@ -146,27 +190,80 @@ pub mod relayer {
             refund: u128,
             function: NFTFunction,
             selector: [u8; 4],
-            params: Vec<Param>
+            params: Vec<Param>,
         ) -> Result<(), Error> {
-          if self.withdraw(proof, root, nullifier_hash, recipient, relayer, fee, refund).is_err() {
-            panic!("withdraw failed")
-          }
+            if self
+                .withdraw(proof, root, nullifier_hash, recipient, relayer, fee, refund)
+                .is_err()
+            {
+                panic!("withdraw failed")
+            }
 
-          if self.erc721 == AccountId::from([0; 32]) {
-              return Err(Error::InvalidContractAddress);
-          }
+            if self.erc721 == AccountId::from([0; 32]) {
+                return Err(Error::InvalidContractAddress);
+            }
 
-          let contract = self.verifier;
+            let contract = self.verifier;
 
-          match function {
-            NFTFunction::Approve => crate::call!(contract, selector, params[0], params[1], params[2], params[3]).returns::<bool>().fire().unwrap(),
-            NFTFunction::RegisterPublicKeys => crate::call!(contract, selector, params[0], params[1], params[2]).returns::<bool>().fire().unwrap(),
-            NFTFunction::Transfer => crate::call!(contract, selector, params[0], params[1], params[2], params[3]).returns::<bool>().fire().unwrap(),
-            NFTFunction::TransferFrom => crate::call!(contract, selector, params[0], params[1], params[2], params[3], params[4]).returns::<bool>().fire().unwrap(),
-            NFTFunction::Mint => crate::call!(contract, selector, params[0], params[1]).returns::<bool>().fire().unwrap(),
-            NFTFunction::Burn => crate::call!(contract, selector, params[0], params[1]).returns::<bool>().fire().unwrap(),
-          };
-          Ok(())
+            match function {
+                NFTFunction::Approve | NFTFunction::Transfer => {
+                    let to = params[0].get_value::<AccountId>().unwrap();
+                    let id = params[1].get_value::<u32>().unwrap();
+                    let ephemeral_public_key = params[2].get_value::<String>().unwrap();
+                    let signature = params[3].get_value::<String>().unwrap();
+                    crate::call!(contract, selector, to, id, ephemeral_public_key, signature)
+                        .returns::<()>()
+                        .fire()
+                        .unwrap();
+                }
+                NFTFunction::RegisterPublicKeys => {
+                    let alias = params[0].get_value::<String>().unwrap();
+                    let scan_public_key = params[1].get_value::<String>().unwrap();
+                    let spend_public_key = params[2].get_value::<String>().unwrap();
+                    crate::call!(contract, selector, alias, scan_public_key, spend_public_key)
+                        .returns::<()>()
+                        .fire()
+                        .unwrap();
+                }
+                NFTFunction::TransferFrom => {
+                    let from = params[0].get_value::<String>().unwrap();
+                    let to = params[1].get_value::<AccountId>().unwrap();
+                    let id = params[2].get_value::<u32>().unwrap();
+                    let ephemeral_public_key = params[3].get_value::<String>().unwrap();
+                    let signature = params[4].get_value::<String>().unwrap();
+                    crate::call!(
+                        contract,
+                        selector,
+                        from,
+                        to,
+                        id,
+                        ephemeral_public_key,
+                        signature
+                    )
+                    .returns::<()>()
+                    .fire()
+                    .unwrap();
+                }
+                NFTFunction::Mint => {
+                    // owner: AccountId, ephemeral_public_key: String
+                    let owner = params[0].get_value::<AccountId>().unwrap();
+                    let ephemeral_public_key = params[1].get_value::<String>().unwrap();
+                    crate::call!(contract, selector, owner, ephemeral_public_key)
+                        .returns::<()>()
+                        .fire()
+                        .unwrap();
+                }
+                NFTFunction::Burn => {
+                    //id: TokenId, signature: String
+                    let id = params[0].get_value::<u32>().unwrap();
+                    let signature = params[1].get_value::<String>().unwrap();
+                    crate::call!(contract, selector, id, signature)
+                        .returns::<()>()
+                        .fire()
+                        .unwrap();
+                }
+            };
+            Ok(())
         }
 
         /// Withdraw token from contract, and nullifier the note
