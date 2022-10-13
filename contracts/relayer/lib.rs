@@ -40,6 +40,7 @@ pub mod relayer {
         BadLength,
         ThirdContractExecutionFailed,
         InvalidContractAddress,
+        WithdrawFailed,
     }
 
     #[derive(Encode, Decode, Debug, PartialEq, Eq, Clone)]
@@ -199,7 +200,7 @@ pub mod relayer {
                 .withdraw(proof, root, nullifier_hash, recipient, relayer, fee, refund)
                 .is_err()
             {
-                panic!("withdraw failed")
+                return Err(Error::WithdrawFailed);
             }
 
             if self.erc721 == AccountId::from([0; 32]) {
@@ -496,6 +497,67 @@ pub mod relayer {
                     refund,
                 ),
                 Err(Error::InvalidContractAddress)
+            );
+            assert_eq!(relayer.nullifier_hashes.contains(nullifier_hash), false);
+        }
+
+        #[ink::test]
+        fn test_execute() {
+            let mut relayer = Relayer::new(10, AccountId::from([0; 32]), AccountId::from([0; 32]));
+            let proof: String = String::from(PROOF);
+            let root: String = String::from(ROOT);
+            let nullifier_hash: String = String::from(NULLIFIER_HASH);
+            // the recipient SS58Address is "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"
+            let recipient = AccountId::from([
+                212, 53, 147, 199, 21, 253, 211, 28, 97, 20, 26, 189, 4, 169, 159, 214, 130, 44,
+                133, 88, 133, 76, 205, 227, 154, 86, 132, 231, 165, 109, 162, 125,
+            ]);
+
+            // the relayer_account SS58Address is "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty"
+            let relayer_account = AccountId::from([
+                142, 175, 4, 21, 22, 135, 115, 99, 38, 201, 254, 161, 126, 37, 252, 82, 135, 97,
+                54, 147, 201, 18, 144, 156, 178, 38, 170, 71, 148, 242, 106, 72,
+            ]);
+            let fee = 500000000u128;
+            let refund = 500000000u128;
+            let commitment = String::from(COMMITMENT);
+
+            // NFT contract param
+            let function = NFTFunction::Mint;
+            let selector: [u8;4] = [0x18, 0x60, 0xff, 0x3b];
+            let owner = AccountId::from([
+                196, 250, 116, 227, 97, 67, 187, 105, 255, 166, 192, 240, 230, 161, 59, 203, 103, 129, 38,
+                138, 170, 251, 216, 145, 117, 22, 187, 84, 152, 240, 21, 254,
+            ]);
+
+            const EPHEMERAL_PUBLIC_KEY: &str =
+              "023283ba9bfc9f689cb4ca88d14734aea6e3bdded740d0e560e9344ab4fe825733";
+            let ephemeral_public_key = EPHEMERAL_PUBLIC_KEY.to_string();
+            let mut params: Vec<Param> = Vec::new();
+            params.push(Param::AccountId(owner));
+            params.push(Param::String(ephemeral_public_key));
+
+            // Payable
+            let accounts = default_accounts::<DefaultEnvironment>();
+            test::set_caller::<DefaultEnvironment>(accounts.alice);
+            test::set_balance::<DefaultEnvironment>(accounts.alice, 10);
+            test::set_value_transferred::<DefaultEnvironment>(1);
+
+            relayer.deposit(commitment).unwrap();
+            assert_eq!(
+                relayer.execute(
+                    proof,
+                    root,
+                    nullifier_hash.clone(),
+                    recipient,
+                    relayer_account,
+                    fee,
+                    refund,
+                    function,
+                    selector,
+                    params
+                ),
+                Err(Error::WithdrawFailed)
             );
             assert_eq!(relayer.nullifier_hashes.contains(nullifier_hash), false);
         }
