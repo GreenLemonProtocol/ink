@@ -144,6 +144,12 @@ pub mod relayer {
                 .insert(0, &String::from(ZEROS[(levels - 1) as usize]));
         }
 
+        /// Returns if hash is included in nullifier_hashes.
+        #[ink(message)]
+        pub fn is_hash_nullified(&self, nullifier_hash: String) -> bool {
+          self.nullifier_hashes.contains(nullifier_hash)
+        }
+
         /// deposit coin into contract
         #[ink(message, payable)]
         pub fn deposit(&mut self, commitment: String) -> Result<u32, Error> {
@@ -498,7 +504,7 @@ pub mod relayer {
                 ),
                 Err(Error::InvalidContractAddress)
             );
-            assert_eq!(relayer.nullifier_hashes.contains(nullifier_hash), false);
+            assert_eq!(relayer.is_hash_nullified(nullifier_hash.clone()), false);
         }
 
         #[ink::test]
@@ -559,7 +565,7 @@ pub mod relayer {
                 ),
                 Err(Error::WithdrawFailed)
             );
-            assert_eq!(relayer.nullifier_hashes.contains(nullifier_hash), false);
+            assert_eq!(relayer.is_hash_nullified(nullifier_hash.clone()), false);
         }
 
         #[ink::test]
