@@ -1,6 +1,7 @@
-const { exec } = require("child_process");
-const fs = require('fs');
-const path = require('path');
+import { exec } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 exec("cd build; zokrates generate-proof;", (error, stdout, stderr) => {
   if (error) {
@@ -15,6 +16,7 @@ exec("cd build; zokrates generate-proof;", (error, stdout, stderr) => {
 
   // Read proof from ./build/proof.json
   const fileLocation = './build/proof.json';
+  const __dirname = path.dirname(fileURLToPath(import.meta.url));
   const parentDir = path.resolve(__dirname, '..');
   const outputFile = path.resolve(parentDir, fileLocation);
 

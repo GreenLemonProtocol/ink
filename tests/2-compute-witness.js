@@ -1,10 +1,12 @@
-const { exec } = require("child_process");
-const fs = require('fs');
-const path = require('path');
+import { exec } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 (async function () {
   // Read witness from ./build/commitment.json
   const fileLocation = './build/commitment.json';
+  const __dirname = path.dirname(fileURLToPath(import.meta.url));
   const parentDir = path.resolve(__dirname, '..');
   const outputFile = path.resolve(parentDir, fileLocation);
 
