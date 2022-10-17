@@ -5,6 +5,8 @@ import bigInt from 'big-integer';
 const p = bigInt(
   '21888242871839275222246405745257275088548364400416034343698204186575808495617'
 );
+
+// get keccak256 from SEED="mimcsponge"
 const c = [
   '0',
   '7120861356467848435263064379192047478074060781135320967663101236819528304084',
@@ -294,8 +296,9 @@ const mimcWithRounds = (rounds, key) => (...inputs) =>
     rounds,
     key
   )[0];
-
-const mimcHash = (key) => mimcWithRounds(220, key);
+  
+// mimc_sponge hash, rounds = 220, key = 0
+const mimcHash = mimcWithRounds(220, 0);
 
 const perlinRandHash = (key) => mimcWithRounds(4, key);
 
