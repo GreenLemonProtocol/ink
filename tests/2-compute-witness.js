@@ -3,8 +3,8 @@ const fs = require('fs');
 const path = require('path');
 
 (async function () {
-  // Read witness from ./build/output.json
-  const fileLocation = './build/output.json';
+  // Read witness from ./build/commitment.json
+  const fileLocation = './build/commitment.json';
   const parentDir = path.resolve(__dirname, '..');
   const outputFile = path.resolve(parentDir, fileLocation);
 

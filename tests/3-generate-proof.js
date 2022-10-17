@@ -27,6 +27,8 @@ exec("cd build; zokrates generate-proof;", (error, stdout, stderr) => {
     to_g2(proofFile.proof.b) +
     to_g1(proofFile.proof.c)
   );
+
+  console.log('The proof has been generated successfully, located in build/proof.json');
 });
 
 // decode hex to Buffer and reverse
