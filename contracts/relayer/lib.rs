@@ -62,37 +62,10 @@ pub mod relayer {
         fn get_value(type_value: &Param) -> Option<Self::Type>;
     }
 
-    impl Value for u32 {
-        type Type = u32;
-        fn get_value(type_value: &Param) -> Option<Self::Type> {
-            if let Param::TokenId(val) = type_value {
-                Some(*val)
-            } else {
-                None
-            }
-        }
-    }
-
-    impl Value for String {
-        type Type = String;
-        fn get_value(type_value: &Param) -> Option<Self::Type> {
-            if let Param::String(val) = type_value.clone() {
-                Some(val)
-            } else {
-                None
-            }
-        }
-    }
-
-    impl Value for ink_env::AccountId {
-        type Type = AccountId;
-        fn get_value(type_value: &Param) -> Option<Self::Type> {
-            if let Param::AccountId(val) = type_value {
-                Some(*val)
-            } else {
-                None
-            }
-        }
+    crate::def_get_values!{
+        TokenId(u32),
+        AccountId(ink_env::AccountId),
+        String(String),
     }
 
     #[derive(Encode, Decode, Debug, PartialEq, Eq, Copy, Clone)]
@@ -673,3 +646,19 @@ macro_rules! call {
             }
         };
     }
+
+#[macro_export]
+macro_rules! def_get_values {
+    ($($name:ident($repr:ty),)*) => {$(
+        impl Value for $repr {
+            type Type = $repr;
+            fn get_value(type_value: &Param) -> Option<Self::Type> {
+                if let Param::$name(val) = type_value.clone() {
+                    Some(val)
+                } else {
+                    None
+                }
+            }
+        }
+    )*}
+}
