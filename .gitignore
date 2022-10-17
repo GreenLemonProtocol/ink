@@ -10,7 +10,6 @@ contract/Cargo.lock
 
 node_modules/
 .DS_Store
-build/out.wtns
 build/commitment.json
 
 # Logs
@@ -125,6 +124,4 @@ dist
 proof.json
 proof.txt
 *.backup
-witness*
 **/target
-**/build/out
