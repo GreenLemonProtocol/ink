@@ -16,8 +16,7 @@ class MerkleTree {
   }
 
   root() {
-    let root = this._layers[this.levels][0] ?? this._zeros[this.levels];
-    return root.padStart(64, '0');
+    return this._layers[this.levels][0] ?? this._zeros[this.levels];
   }
 
   _buildHashes() {

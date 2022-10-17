@@ -64,8 +64,8 @@ const LEVEL = 10;
     "witnessInputs": inputs.toString().replace(/,/g, ' '),
     "commitmentString": commitmentString,
     // public inputs for ink! contract to withdraw
-    "root": tree.root().toString(16),
-    "nullifierHash": nullifierHash.toString(16),
+    "root": tree.root().toString(16).padStart(64, '0'),
+    "nullifierHash": nullifierHash.toString(16).padStart(64, '0'),
     "recipient": recipient,
     "relayer": relayer,
     "fee": fee,
