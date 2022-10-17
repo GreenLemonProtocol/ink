@@ -1,6 +1,7 @@
 
 
-const bigInt = require('big-integer');
+import bigInt from 'big-integer';
+
 const p = bigInt(
   '21888242871839275222246405745257275088548364400416034343698204186575808495617'
 );
@@ -298,10 +299,4 @@ const mimcHash = (key) => mimcWithRounds(220, key);
 
 const perlinRandHash = (key) => mimcWithRounds(4, key);
 
-// export default mimcHash;
-
-exports.mimcHash = mimcHash(0);
-exports.perlinRandHash = perlinRandHash;
-exports.mimcWithRounds = mimcWithRounds;
-exports.modPBigIntNative = modPBigIntNative;
-exports.modPBigInt = modPBigInt;
+export { mimcHash, perlinRandHash, mimcWithRounds, modPBigIntNative, modPBigInt };

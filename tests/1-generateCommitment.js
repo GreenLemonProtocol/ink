@@ -1,12 +1,15 @@
-const crypto = require('crypto');
-const fs = require('fs');
-const merkleTree = require('./merkle-tree.js');
-const polkadotCrypto = require('@polkadot/util-crypto');
-const { initialize } = require('zokrates-js');
-const { assert } = require('console');
-const { mimcHash } = require('./mimc');
-const bigInt = require('big-integer');
-const path = require('path');
+import crypto from 'crypto';
+import { decodeAddress } from '@polkadot/util-crypto';
+// import initialize from 'zokrates-js';
+// import assert from 'console';
+import bigInt from 'big-integer';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+import { mimcHash } from './mimc.js';
+import MerkleTree from './merkle-tree.js';
+
 // merkle tree levels
 const LEVEL = 10;
 
@@ -17,7 +20,7 @@ const LEVEL = 10;
   let commitment = mimcHash(rbigint(nullifier), rbigint(secret));
   // construct a merkle tree, it contains one leaf for this example
   let leaves = [commitment];
-  let tree = new merkleTree();
+  let tree = new MerkleTree();
   tree.init(LEVEL, leaves, { hashFunction: mimcHash });
   let nullifierHash = mimcHash(rbigint(nullifier));
 
@@ -32,9 +35,9 @@ const LEVEL = 10;
 
   // params
   let recipient = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
-  let receiptArray = polkadotCrypto.decodeAddress(recipient);
+  let receiptArray = decodeAddress(recipient);
   let relayer = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty';
-  let relayerArray = polkadotCrypto.decodeAddress(relayer);
+  let relayerArray = decodeAddress(relayer);
   let fee = '500000000';
   let refund = '500000000';
 
@@ -76,7 +79,11 @@ const LEVEL = 10;
 
   // Save file to config directory
   // Get current directory
+
+  // Get current directory
+  const __dirname = path.dirname(fileURLToPath(import.meta.url));
   const parentDir = path.resolve(__dirname, '..');
+
   const outputFile = path.resolve(parentDir, './build/commitment.json');
 
   await fs.writeFileSync(outputFile, JSON.stringify(output));

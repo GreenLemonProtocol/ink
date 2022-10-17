@@ -1,3 +1,5 @@
+// This class inspired by [fixed-merkle-tree](https://github.com/tornadocash/fixed-merkle-tree)
+
 class MerkleTree {
   // constructor() {}
   init(levels, elements = [], { hashFunction, zeroElement = '0' } = {}) {
@@ -183,4 +185,4 @@ class MerkleTree {
     return JSON.stringify(this.serialize());
   }
 }
-module.exports = MerkleTree;
+export { MerkleTree };
