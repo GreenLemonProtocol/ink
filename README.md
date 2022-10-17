@@ -68,25 +68,30 @@ Copy `relayer` contract address from `Polkadot/Substrate Portal` after contract 
 
 ### Generate commitment and proof
 
-#### 1.Generate commitment
+#### 0. run `build.sh` to compile the circuits and setup step to generate `proving.key` and `verification.key`
+```
+sh ./circuits/build.sh
+```
+
+#### 1. Generate commitment
 
 ```
 node tests/1-generateCommitment.js
 ```
 
-#### 2.Compute witness
+#### 2. Compute witness
 
 ```
 node tests/2-compute-witness.js
 ```
 
-#### 3.Generate zero knowledge proof
+#### 3. Generate zero knowledge proof
 
 ```
 node tests/3-generate-proof.js
 ```
 
-#### 4.Verify zero knowledge proof off-chain
+#### 4. Verify zero knowledge proof off-chain
 
 ```
 node tests/4-verify-proof-offchain.js
