@@ -8,7 +8,7 @@ contracts/**/*.rs.bk
 # More information here http://doc.crates.io/guide.html#cargotoml-vs-cargolock
 contract/Cargo.lock
 
-tests/node_modules/
+node_modules/
 .DS_Store
 build/out.wtns
 build/commitment.json

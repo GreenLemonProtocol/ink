@@ -51,11 +51,23 @@ sh ./build-test-all.sh
 cargo doc --open
 ```
 
-### Deploy contract to local node
+### Test contract on-chain
 
-Upload compiled contract `relayer` and `verifier` to local node by [Polkadot/Substrate Portal](https://polkadot.js.org/apps/#/explorer).
+#### Deploy contract to local node
 
-### Test
+#### 1. Start the local substrate node
+```
+./substrate-greenlemon-node --dev
+```
+
+#### 2. Deploy compiled contract `erc721` and `verifier` and `relayer` to local node by [Polkadot/Substrate Portal](https://polkadot.js.org/apps/#/explorer).
+
+#### 3. Update contract address
+Copy `relayer` contract address from `Polkadot/Substrate Portal` after contract deployed, open http/config/default.json, and update `ContractAddress`.
+
+
+### Generate commitment and proof
+
 #### 1.Generate commitment
 
 ```

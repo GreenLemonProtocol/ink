@@ -3,14 +3,21 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@polkadot/api": "^9.5.2",
+    "@polkadot/api-contract": "^9.5.2",
     "@polkadot/util-crypto": "^10.1.7",
     "big-integer": "^1.6.51",
+    "body-parser": "^1.20.1",
+    "express": "^4.18.2",
+    "fs": "^0.0.1-security",
+    "nconf": "^0.12.0",
     "zokrates-js": "^1.1.3"
   }
 }
