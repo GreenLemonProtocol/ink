@@ -8,7 +8,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 import { mimcHash } from './mimc.js';
-import MerkleTree from './merkle-tree.js';
+import { MerkleTree } from './merkle-tree.js';
 
 // merkle tree levels
 const LEVEL = 10;
