@@ -8,7 +8,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 import { mimcHash } from './mimc.js';
-import { MerkleTree } from './merkle-tree.js';
+
+import { MerkleTree } from 'fixed-merkle-tree'
 
 // merkle tree levels
 const LEVEL = 10;
@@ -20,8 +21,8 @@ const LEVEL = 10;
   let commitment = mimcHash(rbigint(nullifier), rbigint(secret));
   // construct a merkle tree, it contains one leaf for this example
   let leaves = [commitment];
-  let tree = new MerkleTree();
-  tree.init(LEVEL, leaves, { hashFunction: mimcHash });
+  let tree = new MerkleTree(LEVEL, leaves, { hashFunction: mimcHash });
+  // tree.init(LEVEL, leaves, { hashFunction: mimcHash });
   let nullifierHash = mimcHash(rbigint(nullifier));
 
   // init merkle tree
@@ -48,7 +49,7 @@ const LEVEL = 10;
   // inputs for compute witness
   let inputs = [
     // public input
-    tree.root().toString(),
+    tree.root.toString(),
     nullifierHash.toString(),
     ...toArray(Buffer.from(receiptArray).toString('hex'), 2),
     ...toArray(Buffer.from(relayerArray).toString('hex'), 2),
@@ -67,7 +68,7 @@ const LEVEL = 10;
     "witnessInputs": inputs.toString().replace(/,/g, ' '),
     "commitmentString": commitmentString,
     // public inputs for ink! contract to withdraw
-    "root": tree.root().toString(16).padStart(64, '0'),
+    "root": tree.root.toString(16).padStart(64, '0'),
     "nullifierHash": nullifierHash.toString(16).padStart(64, '0'),
     "recipient": recipient,
     "relayer": relayer,
@@ -86,7 +87,7 @@ const LEVEL = 10;
 
   const outputFile = path.resolve(parentDir, './build/commitment.json');
 
-  await fs.writeFileSync(outputFile, JSON.stringify(output));
+  fs.writeFileSync(outputFile, JSON.stringify(output));
   console.log('The commitment has been generated successfully, located in ' + outputFile);
 
   // ///////////////////////////////
