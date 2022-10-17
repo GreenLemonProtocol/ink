@@ -77,7 +77,7 @@ const LEVEL = 10;
   // Save file to config directory
   // Get current directory
   const parentDir = path.resolve(__dirname, '..');
-  const outputFile = path.resolve(parentDir, './build/output.json');
+  const outputFile = path.resolve(parentDir, './build/commitment.json');
 
   await fs.writeFileSync(outputFile, JSON.stringify(output));
   console.log('The commitment has been generated successfully, located in ' + outputFile);

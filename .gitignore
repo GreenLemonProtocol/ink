@@ -11,7 +11,7 @@ contract/Cargo.lock
 tests/node_modules/
 .DS_Store
 build/out.wtns
-build/output.json
+build/commitment.json
 
 # Logs
 logs
