@@ -11,7 +11,7 @@ Quick facts:
 * Anonymous NFT contract hiding token owners based on dual-key stealth address protocol
 * Send anonymous transactions to relayer contract based on zero-knowledge proof
 
-For more details about dual-key stealth address protocol, please [click me](https://github.com/GreenLemonProtocol/dksap-polkadot)
+For more details about dual-key stealth address protocol, please [click me](https://github.com/GreenLemonProtocol/dksap-polkadot).
 
 The relayer contract contains 4 core functions: Deposit, RegisterPublicKeys, Withdrawal, and Execute.
 
@@ -37,7 +37,7 @@ If you are a new talent for Polkadot blockchain or Node.js, please install the D
 * [Install Node.js environment](https://nodejs.org/en/download/)
 * [Install Zokrates](https://zokrates.github.io/gettingstarted.html)
 * [Install cargo-contract](https://github.com/paritytech/cargo-contract), because we need to add nightly builds to Rust runtime env & install binaryen in a version >= 99.
-* Install test dependencies. `npm install -d`
+* Install test dependencies. `npm i -d`
 
 ### Contract build & test
 
@@ -74,21 +74,19 @@ cargo doc --open --manifest-path erc721/Cargo.toml
 #### 2. Deploy compiled contract `erc721` and `verifier` and `relayer` to local node by [Polkadot Portal](https://polkadot.js.org/apps/#/explorer).
 
 contract erc721 deployment constructor param:
-baseUri
 ```
-https://raw.githubusercontent.com/GreenLemonProtocol/assets/main/nft
+baseUri: https://raw.githubusercontent.com/GreenLemonProtocol/assets/main/nft
 ```
 
 contract relayer deployment constructor param:
-levels:
 ```
-10
+levels: 10
 ```
 
 #### 3. Update contract address
 
-* Copy `RELAYER` contract address from `Polkadot Portal` after contract deployed, open `http/config/default.json`, and update `RelayerContractAddress`
-* Copy `ERC721` contract address from `Polkadot Portal` after contract deployed, open `http/config/default.json`, and update `NFTContractAddress`
+* Copy `RELAYER` contract address from Polkadot Portal after contract deployed, open `http/config/default.json`, and update `RelayerContractAddress`
+* Copy `ERC721` contract address from Polkadot Portal after contract deployed, open `http/config/default.json`, and update `NFTContractAddress`
 
 
 #### 4. Start HTTP service
@@ -96,7 +94,7 @@ levels:
 node http/index.js
 ```
 
-#### 4. Running client test cases
+#### 5. Running client test cases
 
 ```
 node client/0-generateKeyPair.js
