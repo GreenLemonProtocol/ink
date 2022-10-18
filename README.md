@@ -42,7 +42,7 @@ Contract relayer & Contract verifier
 
 ```
 cd contracts
-sh ./build-test-all.sh
+sh contracts/build-test-all.sh
 ```
 
 #### Generate docs
@@ -62,8 +62,20 @@ cargo doc --open
 
 #### 2. Deploy compiled contract `erc721` and `verifier` and `relayer` to local node by [Polkadot/Substrate Portal](https://polkadot.js.org/apps/#/explorer).
 
+contract erc721 deployment constructor param:
+baseUri
+```
+https://raw.githubusercontent.com/GreenLemonProtocol/assets/main/nft
+```
+
+contract relayer deployment constructor param:
+levels:
+```
+10
+```
+
 #### 3. Update contract address
-Copy `relayer` contract address from `Polkadot/Substrate Portal` after contract deployed, open http/config/default.json, and update `ContractAddress`.
+Copy `relayer` contract address from `Polkadot/Substrate Portal` after contract deployed, open `http/config/default.json`, and update `ContractAddress`.
 
 
 ### Generate commitment and proof

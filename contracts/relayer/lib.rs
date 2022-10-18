@@ -80,7 +80,7 @@ pub mod relayer {
     }
 
     const ROOT_HISTORY_SIZE: u32 = 30; // merkle tree history size
-    const DEPOSIT_AMOUNT: Balance = 1; // required deposit amount
+    const DEPOSIT_AMOUNT: Balance = 1000000000000; // required deposit amount
 
     #[ink(storage)]
     #[derive(SpreadAllocate)]
@@ -426,8 +426,8 @@ pub mod relayer {
             // Payable
             let mut relayer = Relayer::new(10, AccountId::from([0; 32]), AccountId::from([0; 32]));
             test::set_caller::<DefaultEnvironment>(accounts.alice);
-            test::set_balance::<DefaultEnvironment>(accounts.alice, 10);
-            test::set_value_transferred::<DefaultEnvironment>(1);
+            test::set_balance::<DefaultEnvironment>(accounts.alice, 10000000000000);
+            test::set_value_transferred::<DefaultEnvironment>(1000000000000);
 
             // Init commitment
             let commitment = String::from(COMMITMENT);
@@ -454,15 +454,15 @@ pub mod relayer {
                 142, 175, 4, 21, 22, 135, 115, 99, 38, 201, 254, 161, 126, 37, 252, 82, 135, 97,
                 54, 147, 201, 18, 144, 156, 178, 38, 170, 71, 148, 242, 106, 72,
             ]);
-            let fee = 500000000u128;
-            let refund = 500000000u128;
+            let fee = 500000000000u128;
+            let refund = 500000000000u128;
             let commitment = String::from(COMMITMENT);
 
             // Payable
             let accounts = default_accounts::<DefaultEnvironment>();
             test::set_caller::<DefaultEnvironment>(accounts.alice);
-            test::set_balance::<DefaultEnvironment>(accounts.alice, 10);
-            test::set_value_transferred::<DefaultEnvironment>(1);
+            test::set_balance::<DefaultEnvironment>(accounts.alice, 10000000000000);
+            test::set_value_transferred::<DefaultEnvironment>(1000000000000);
 
             relayer.deposit(commitment).unwrap();
             assert_eq!(
@@ -497,8 +497,8 @@ pub mod relayer {
                 142, 175, 4, 21, 22, 135, 115, 99, 38, 201, 254, 161, 126, 37, 252, 82, 135, 97,
                 54, 147, 201, 18, 144, 156, 178, 38, 170, 71, 148, 242, 106, 72,
             ]);
-            let fee = 500000000u128;
-            let refund = 500000000u128;
+            let fee = 500000000000u128;
+            let refund = 500000000000u128;
             let commitment = String::from(COMMITMENT);
 
             // NFT contract param
@@ -519,8 +519,8 @@ pub mod relayer {
             // Payable
             let accounts = default_accounts::<DefaultEnvironment>();
             test::set_caller::<DefaultEnvironment>(accounts.alice);
-            test::set_balance::<DefaultEnvironment>(accounts.alice, 10);
-            test::set_value_transferred::<DefaultEnvironment>(1);
+            test::set_balance::<DefaultEnvironment>(accounts.alice, 10000000000000);
+            test::set_value_transferred::<DefaultEnvironment>(1000000000000);
 
             relayer.deposit(commitment).unwrap();
             assert_eq!(
