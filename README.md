@@ -109,23 +109,23 @@ sh ./circuits/build.sh
 #### 1. Generate commitment
 
 ```
-node tests/1-generateCommitment.js
+node scripts/1-generateCommitment.js
 ```
 
 #### 2. Compute witness
 
 ```
-node tests/2-compute-witness.js
+node scripts/2-compute-witness.js
 ```
 
 #### 3. Generate zero knowledge proof
 
 ```
-node tests/3-generate-proof.js
+node scripts/3-generate-proof.js
 ```
 
 #### 4. Verify zero knowledge proof off-chain
 
 ```
-node tests/4-verify-proof-offchain.js
+node scripts/4-verify-proof-offchain.js
 ```

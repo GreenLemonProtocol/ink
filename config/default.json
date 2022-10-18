@@ -1,7 +1,7 @@
 {
   "WsProvider": "ws://127.0.0.1:9944",
-  "RelayerContractAddress": "5FNHDMJL851JwbqFYAhG7jjgjdUBR8bXYkzA7UasJvK33mtw",
-  "NFTContractAddress": "5E8UrnYhgzAmi6WS7zWvynF98EwQVspLhhhqeNB41YFook2T",
+  "RelayerContractAddress": "5Ffb9S3NriqDYeKHRw2DaTG4F4n3vVZrZppbDTtRGzJnMRUg",
+  "NFTContractAddress": "5GfmS5tRkk4SNshbizdREVkhxzbYQ8hJTXfVmtc9rbMxK2ak",
   "RelayerContractMetaData": "./contracts/relayer/target/ink/metadata.json",
   "NFTContractMetaData": "./contracts/erc721/target/ink/metadata.json",
   "RelayerAccount": "//Eve",
