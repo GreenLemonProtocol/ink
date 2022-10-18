@@ -13,6 +13,20 @@ Quick facts:
 
 For more details about dual-key stealth address protocol, please [click me](https://github.com/GreenLemonProtocol/dksap-polkadot).
 
+### Product Logic
+
+Green Lemon Protocol is a service like coin mixers that allows users to obfuscate the origin and destination of transactions. Because of the logic of the blockchain, every transaction is public. If you have some DOT on your account, you cannot transfer it anonymously, because anybody can follow your transaction history on the blockchain. Coin mixers, like Tornado Cash, can solve this privacy problem by breaking the on-chain link between the source and the destination address by using ZKP. Most importantly, we can trigger a third-party contract when we submit the zero-knowledge proof, and pay transaction fees to the relayer service. If the transaction fees you paid can cover the cost of calling a third-party contract. Then the whole logic makes sense.
+
+If you want to anonymize one of your transactions, you have to deposit a small amount of DOT on the Green Lemon Protocol contract (ex.: 1 DOT). After a little while, you can withdraw this 1 DOT with a different account. The trick is that nobody can create a link between the depositor account and the withdrawal account. If hundreds of accounts deposit 1 DOT on one side and the other hundreds of accounts withdraw 1 DOT on the other side, then nobody will be able to follow the path where the money moves.
+
+The technical challenge is that smart contract transactions are also public like any other transaction on the Polkadot network. This is the point where zero-knowledge proof will be relevant.
+
+For more details about zero-knowledge proof, please [click me](https://betterprogramming.pub/understanding-zero-knowledge-proofs-through-the-source-code-of-tornado-cash-41d335c5475f).
+
+### Work flow
+
+![workflow.jpg](./docs/workflow.jpg)
+
 The relayer contract contains 4 core functions: Deposit, RegisterPublicKeys, Withdrawal, and Execute.
 
 * Deposit: The user deposit a coin to the NFT anonymous contract and get a note, which is used to pay the relayer fees for anonymous transactions.
@@ -25,20 +39,6 @@ Both `Withdrawal` and `Execute` require the user generate a zero-knowledge proof
 Medium articles:
 
 * [Green Lemon Protocol — An anonymous NFT solution](https://medium.com/@wuyahuang/green-lemon-protocol-an-anonymous-nft-solution-2fad91cc8f48)
-
-### Product Logic
-
-Green Lemon Protocol is a service like coin mixers that allows users to obfuscate the origin and destination of transactions. Because of the logic of the blockchain, every transaction is public. If you have some DOT on your account, you cannot transfer it anonymously, because anybody can follow your transaction history on the blockchain. Coin mixers, like Tornado Cash, can solve this privacy problem by breaking the on-chain link between the source and the destination address by using ZKP. Most importantly, we can trigger a third-party contract when we submit the zero-knowledge proof, and pay transaction fees to relayer service. If the transaction fess you paid can cover the cost of calling a third-party contract. Then the whole logic makes sense.
-
-If you want to anonymize one of your transactions, you have to deposit a small amount of DOT on the Green Lemon Protocol contract (ex.: 1 DOT). After a little while, you can withdraw this 1 DOT with a different account. The trick is that nobody can create a link between the depositor account and the withdrawal account. If hundreds of accounts deposit 1 DOT on one side and the other hundreds of accounts withdraw 1 DOT on the other side, then nobody will be able to follow the path where the money moves.
-
-The technical challenge is that smart contract transactions are also public like any other transaction on the Polkadot network. This is the point where zero-knowledge proof will be relevant.
-
-For more details about zero-knowledge proof, please [click me](https://betterprogramming.pub/understanding-zero-knowledge-proofs-through-the-source-code-of-tornado-cash-41d335c5475f).
-
-### Work flow
-
-![workflow.jpg](./docs/workflow.jpg)
 
 ### Install
 If you are a new talent for Polkadot blockchain or Node.js, please install the DEV environment first.
