@@ -18,12 +18,6 @@
 //! The errors are defined as an `enum` type. Any other error or invariant violation
 //! triggers a panic and therefore rolls back the transaction.
 //!
-//! ## Register Scan & Spend Public Key
-//!
-//! Scan public key register start by calling the `register_public_keys` function.
-//! When a token owner wants to transfer ownership of the token,
-//! it needs to query the receiver's scan public key through the contract, and then generate an encrypted receiver AccountId.
-//!
 //! ## Token Management
 //!
 //! After creating a new token, the owner address inputted by the function caller becomes the owner.
@@ -75,8 +69,6 @@ pub mod erc721 {
   pub struct Erc721 {
     /// Total supply
     total_supply: u32,
-    /// Mapping from alias to scan public key & spend public key.
-    public_keys: Mapping<String, (String, String)>,
     /// Mapping from token to owner.
     token_owner: Mapping<TokenId, AccountId>,
     /// Mapping from token to ephemeral public key.
@@ -96,7 +88,6 @@ pub mod erc721 {
   pub enum Error {
     NotOwner,
     NotApproved,
-    AliasExists,
     TokenNotFound,
     CannotInsert,
     CannotFetchValue,
@@ -213,34 +204,10 @@ pub mod erc721 {
       self.token_ephemeral.get(&id)
     }
 
-    /// Returns the public keys of the alias.
-    #[ink(message)]
-    pub fn public_keys_of(&self, alias: String) -> Option<(String, String)> {
-      self.public_keys.get(&alias)
-    }
-
     /// Returns the toatl supply.
     #[ink(message)]
     pub fn total_supply(&self) -> u32 {
       self.total_supply
-    }
-
-    /// Register scan public key
-    #[ink(message)]
-    pub fn register_public_keys(
-      &mut self,
-      alias: String,
-      scan_public_key: String,
-      spend_public_key: String,
-    ) -> Result<(), Error> {
-      if self.public_keys.contains(&alias) {
-        return Err(Error::AliasExists);
-      }
-      self
-        .public_keys
-        .insert(&alias, &(scan_public_key, spend_public_key));
-
-      Ok(())
     }
 
     /// Transfers the token from the caller to the given `AccountId`.
@@ -585,12 +552,6 @@ pub mod erc721 {
     use super::*;
     use ink_lang as ink;
     // Because the test environment does not support elliptic curve APIs, public keys and signatures have to be hard-coded for test purposes.
-    const ALICE: &str = "Alice";
-    const ALICE_SCAN_PUB_KEY: &str =
-      "032d822430da92b8f87ccee0872375e15b56622722a90e6427748835b42286838f";
-    const ALICE_SPEND_PUB_KEY: &str =
-      "0283aed736678d2864d09ce59f487f83051a62d9fa0f9c1ae75858ae1d7185bd12";
-
     // Alice ephemeral public key.
     const ALICE_EPHEMERAL_PUBLIC_KEY: &str =
       "023283ba9bfc9f689cb4ca88d14734aea6e3bdded740d0e560e9344ab4fe825733";
@@ -636,42 +597,6 @@ pub mod erc721 {
       assert_eq!(erc721.base_uri(), BASE_URI.to_string());
       assert_eq!(erc721.token_uri(nft_id), BASE_URI.to_string() + "/1");
       assert_eq!(erc721.token_nonce_of(nft_id), 1);
-    }
-
-    #[ink::test]
-    fn register_public_keys() {
-      // Create a new contract instance.
-      let mut erc721 = Erc721::new(BASE_URI.to_string());
-
-      // Alias Alice does not registered.
-      assert_eq!(erc721.public_keys_of(ALICE.to_string().clone()), None);
-      // Register scan public key & spend public key for Alice.
-      assert_eq!(
-        erc721.register_public_keys(
-          ALICE.to_string().clone(),
-          ALICE_SCAN_PUB_KEY.to_string().clone(),
-          ALICE_SPEND_PUB_KEY.to_string().clone()
-        ),
-        Ok(())
-      );
-      // The scan&spend public key of Alice should match previously params.
-      assert_eq!(
-        erc721.public_keys_of(ALICE.to_string().clone()).unwrap(),
-        (
-          ALICE_SCAN_PUB_KEY.to_string(),
-          ALICE_SPEND_PUB_KEY.to_string()
-        )
-      );
-
-      // Alias Alice cannot register again.
-      assert_eq!(
-        erc721.register_public_keys(
-          ALICE.to_string().clone(),
-          ALICE_SCAN_PUB_KEY.to_string().clone(),
-          ALICE_SPEND_PUB_KEY.to_string().clone()
-        ),
-        Err(Error::AliasExists)
-      );
     }
 
     #[ink::test]

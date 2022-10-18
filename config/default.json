@@ -1,7 +1,10 @@
 {
   "WsProvider": "ws://127.0.0.1:9944",
-  "ContractAddress": "5E2XBz8QyrRkpTH9Rt4BXUm74oEAsyLYg8tZPEGSV4VG3gtK",
-  "ContractMetaData": "./contracts/relayer/target/ink/metadata.json",
+  "RelayerContractAddress": "5HRkB3vU5MUCxUWVKePVGC6zPn6zV1j6GdxdTMWREpQ1xHUu",
+  "NFTContractAddress": "5GdSFMvemFRTFP1eJ1nHfxB8RuVEBwjW6Cwtoh6SLhwc3DHW",
+  "RelayerContractMetaData": "./contracts/relayer/target/ink/metadata.json",
+  "NFTContractMetaData": "./contracts/erc721/target/ink/metadata.json",
   "RelayerAccount": "//Eve",
+  "DepositorAccount": "//Ferdie",
   "RelayerServiceAddress": "http://127.0.0.1:3000/sendTransaction"
 }

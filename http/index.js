@@ -20,7 +20,7 @@ nconf.file('./config/default.json');
 const wsProvider = new WsProvider(nconf.get('WsProvider'));
 const api = await ApiPromise.create({ provider: wsProvider });
 
-const metadata = JSON.parse(fs.readFileSync(nconf.get('ContractMetaData')));
+const metadata = JSON.parse(fs.readFileSync(nconf.get('RelayerContractMetaData')));
 
 // Construct the keyring after the API (crypto has an async init)
 const keyring = new Keyring({ type: 'sr25519' });
@@ -28,9 +28,9 @@ const relayerAccount = keyring.addFromUri(nconf.get('RelayerAccount'));
 
 console.log('Relayer address:', relayerAccount.address);
 
-const contractAddress = nconf.get('ContractAddress');
+const contractAddress = nconf.get('RelayerContractAddress');
 const contract = new ContractPromise(api, metadata, contractAddress);
-console.log('Smart contract address: ' + contractAddress);
+console.log('Relayer contract address: ' + contractAddress);
 
 app.get('/', (req, res) => {
   res.send('Hello World.')
@@ -52,10 +52,9 @@ app.post('/sendTransaction', async (req, res) => {
     console.log(req.body);
 
     // Sent transaction to contract
-    const gasLimit = -1;
-    const storageDepositLimit = null;
+    const gasLimit = 20000000000000;
 
-    const mint = await contract.tx[data['action']]({ storageDepositLimit, gasLimit }, ...args);
+    const mint = await contract.tx[data['action']]({ gasLimit }, ...args);
     const hash = await mint.signAndSend(relayerAccount);
     const hashToHex = hash.toHex();
 

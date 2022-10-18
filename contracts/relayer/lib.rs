@@ -32,6 +32,7 @@ pub mod relayer {
         AlreadySubmitted,
         VerifyCatchErr,
         MerkleTreeFull,
+        AliasExists,
         IndexOutOfBounds,
         RootNotExist,
         AlreadySpent,
@@ -72,7 +73,6 @@ pub mod relayer {
     #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
     pub enum NFTFunction {
         Approve,
-        RegisterPublicKeys,
         Transfer,
         TransferFrom,
         Mint,
@@ -87,6 +87,8 @@ pub mod relayer {
     pub struct Relayer {
         // Stores the ZK result
         pub verifier: AccountId,
+        /// Mapping from alias to scan public key & spend public key.
+        public_keys: Mapping<String, (String, String)>,
         pub erc721: AccountId,
         pub commitments: Mapping<String, bool>,
         pub nullifier_hashes: Mapping<String, bool>,
@@ -121,6 +123,30 @@ pub mod relayer {
         #[ink(message)]
         pub fn is_hash_nullified(&self, nullifier_hash: String) -> bool {
           self.nullifier_hashes.contains(nullifier_hash)
+        }
+
+        /// Returns the public keys of the alias.
+        #[ink(message)]
+        pub fn public_keys_of(&self, alias: String) -> Option<(String, String)> {
+          self.public_keys.get(&alias)
+        }
+
+        /// Register scan public key
+        #[ink(message)]
+        pub fn register_public_keys(
+          &mut self,
+          alias: String,
+          scan_public_key: String,
+          spend_public_key: String,
+        ) -> Result<(), Error> {
+          if self.public_keys.contains(&alias) {
+            return Err(Error::AliasExists);
+          }
+          self
+            .public_keys
+            .insert(&alias, &(scan_public_key, spend_public_key));
+
+          Ok(())
         }
 
         /// deposit coin into contract
@@ -173,7 +199,7 @@ pub mod relayer {
             refund: u128,
             function: NFTFunction,
             selector: [u8; 4],
-            params: Vec<Param>,
+            contract_params: Vec<Param>,
         ) -> Result<(), Error> {
             if self
                 .withdraw(proof, root, nullifier_hash, recipient, relayer, fee, refund)
@@ -191,30 +217,21 @@ pub mod relayer {
             // match function of erc721 contract 
             match function {
                 NFTFunction::Approve | NFTFunction::Transfer => {
-                    let to = params[0].get_value::<AccountId>().unwrap();
-                    let id = params[1].get_value::<u32>().unwrap();
-                    let ephemeral_public_key = params[2].get_value::<String>().unwrap();
-                    let signature = params[3].get_value::<String>().unwrap();
+                    let to = contract_params[0].get_value::<AccountId>().unwrap();
+                    let id = contract_params[1].get_value::<u32>().unwrap();
+                    let ephemeral_public_key = contract_params[2].get_value::<String>().unwrap();
+                    let signature = contract_params[3].get_value::<String>().unwrap();
                     crate::call!(contract, selector, to, id, ephemeral_public_key, signature)
                         .returns::<()>()
                         .fire()
                         .unwrap();
                 }
-                NFTFunction::RegisterPublicKeys => {
-                    let alias = params[0].get_value::<String>().unwrap();
-                    let scan_public_key = params[1].get_value::<String>().unwrap();
-                    let spend_public_key = params[2].get_value::<String>().unwrap();
-                    crate::call!(contract, selector, alias, scan_public_key, spend_public_key)
-                        .returns::<()>()
-                        .fire()
-                        .unwrap();
-                }
                 NFTFunction::TransferFrom => {
-                    let from = params[0].get_value::<String>().unwrap();
-                    let to = params[1].get_value::<AccountId>().unwrap();
-                    let id = params[2].get_value::<u32>().unwrap();
-                    let ephemeral_public_key = params[3].get_value::<String>().unwrap();
-                    let signature = params[4].get_value::<String>().unwrap();
+                    let from = contract_params[0].get_value::<String>().unwrap();
+                    let to = contract_params[1].get_value::<AccountId>().unwrap();
+                    let id = contract_params[2].get_value::<u32>().unwrap();
+                    let ephemeral_public_key = contract_params[3].get_value::<String>().unwrap();
+                    let signature = contract_params[4].get_value::<String>().unwrap();
                     crate::call!(
                         contract,
                         selector,
@@ -230,8 +247,8 @@ pub mod relayer {
                 }
                 NFTFunction::Mint => {
                     // owner: AccountId, ephemeral_public_key: String
-                    let owner = params[0].get_value::<AccountId>().unwrap();
-                    let ephemeral_public_key = params[1].get_value::<String>().unwrap();
+                    let owner = contract_params[0].get_value::<AccountId>().unwrap();
+                    let ephemeral_public_key = contract_params[1].get_value::<String>().unwrap();
                     crate::call!(contract, selector, owner, ephemeral_public_key)
                         .returns::<()>()
                         .fire()
@@ -239,8 +256,8 @@ pub mod relayer {
                 }
                 NFTFunction::Burn => {
                     //id: TokenId, signature: String
-                    let id = params[0].get_value::<u32>().unwrap();
-                    let signature = params[1].get_value::<String>().unwrap();
+                    let id = contract_params[0].get_value::<u32>().unwrap();
+                    let signature = contract_params[1].get_value::<String>().unwrap();
                     crate::call!(contract, selector, id, signature)
                         .returns::<()>()
                         .fire()
@@ -550,6 +567,49 @@ pub mod relayer {
             let relayer = Relayer::new(10, AccountId::from([0; 32]), AccountId::from([0; 32]));
             // println!("pow: {}", u64::pow(2, 10));
             relayer.mimc_sponge(inputs);
+        }
+
+        // Because the test environment does not support elliptic curve APIs, public keys and signatures have to be hard-coded for test purposes.
+        const ALICE: &str = "Alice";
+        const ALICE_SCAN_PUB_KEY: &str =
+          "032d822430da92b8f87ccee0872375e15b56622722a90e6427748835b42286838f";
+        const ALICE_SPEND_PUB_KEY: &str =
+          "0283aed736678d2864d09ce59f487f83051a62d9fa0f9c1ae75858ae1d7185bd12";
+          
+        #[ink::test]
+        fn register_public_keys() {
+          // Create a new contract instance.
+          let mut relayer = Relayer::new(10, AccountId::from([0; 32]), AccountId::from([0; 32]));
+
+          // Alias Alice does not registered.
+          assert_eq!(relayer.public_keys_of(ALICE.to_string().clone()), None);
+          // Register scan public key & spend public key for Alice.
+          assert_eq!(
+            relayer.register_public_keys(
+              ALICE.to_string().clone(),
+              ALICE_SCAN_PUB_KEY.to_string().clone(),
+              ALICE_SPEND_PUB_KEY.to_string().clone()
+            ),
+            Ok(())
+          );
+          // The scan&spend public key of Alice should match previously params.
+          assert_eq!(
+            relayer.public_keys_of(ALICE.to_string().clone()).unwrap(),
+            (
+              ALICE_SCAN_PUB_KEY.to_string(),
+              ALICE_SPEND_PUB_KEY.to_string()
+            )
+          );
+
+          // Alias Alice cannot register again.
+          assert_eq!(
+            relayer.register_public_keys(
+              ALICE.to_string().clone(),
+              ALICE_SCAN_PUB_KEY.to_string().clone(),
+              ALICE_SPEND_PUB_KEY.to_string().clone()
+            ),
+            Err(Error::AliasExists)
+          );
         }
     }
 }

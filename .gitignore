@@ -8,6 +8,10 @@ contracts/**/*.rs.bk
 # More information here http://doc.crates.io/guide.html#cargotoml-vs-cargolock
 contract/Cargo.lock
 
+config/alice.json
+config/bob.json
+config/charlie.json
+
 node_modules/
 .DS_Store
 build/out.wtns
@@ -20,7 +24,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
-client/*
+
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
