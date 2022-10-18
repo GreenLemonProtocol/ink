@@ -133,3 +133,7 @@ node scripts/3-generate-proof.js
 ```
 node scripts/4-verify-proof-offchain.js
 ```
+
+### Demo Video
+[Milestone 1](https://www.youtube.com/watch?v=etVIPgOjFNg)
+[Milestone 2](https://www.youtube.com/watch?v=2cP22UEVMF0)
