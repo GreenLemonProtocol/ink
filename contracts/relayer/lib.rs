@@ -1,3 +1,43 @@
+//! # Relayer Contract
+//!
+//! This is a relayer contract implementaion for Green Lemon Protocol
+//!
+//! ## Warning
+//! 
+//! This contract is an *example*. It is neither audited nor endorsed for production use.
+//! Do **not** rely on it to keep anything of value secure.
+//!
+//! ## Overview
+//!
+//! This contract demonstrates how to send anonymous transaction based on zero-knowledge proof.
+//!
+//! ## Error Handling
+//!
+//! Any function that modifies the state returns a `Result` type and does not changes the state 
+//! if the `Error` occurs.
+//! The errors are defined as an `enum` type. Any other error or invariant violation
+//! triggers a panic and therefore rolls back the transaction.
+//!
+//! ## Register Scan & Spend Public Key
+//!
+//! Scan public key register start by calling the `register_public_keys` function.
+//! When a token owner wants to mint new token or transfer ownership of the token,
+//! it needs to query the receiver's scan public key through the contract, and then generate an encrypted receiver AccountId.
+//!
+//! ## Deposit
+//!
+//! The user deposit a coin to the NFT anonymous contract and get a note, which is used to pay the relayer fees for anonymous transactions.
+//!
+//! ## Withdrawal
+//!
+//! The user takes back the coin previously deposited, and nullifies the corresponding note.
+//!
+//! ## Execute
+//!
+//! The user calls the NFT contract's function through the relayer contract.
+
+// This contract inspired by [OpenZKP from patractlabs](https://github.com/patractlabs/OpenZKP).
+
 #![cfg_attr(not(feature = "std"), no_std)]
 use ink_lang as ink;
 
@@ -44,6 +84,7 @@ pub mod relayer {
         WithdrawFailed,
     }
 
+    // Define the param type of the third contract
     #[derive(Encode, Decode, Debug, PartialEq, Eq, Clone)]
     #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
     pub enum Param {
@@ -69,6 +110,7 @@ pub mod relayer {
         String(String),
     }
 
+    // Define the executable functions of the third contract
     #[derive(Encode, Decode, Debug, PartialEq, Eq, Copy, Clone)]
     #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
     pub enum NFTFunction {
@@ -85,13 +127,17 @@ pub mod relayer {
     #[ink(storage)]
     #[derive(SpreadAllocate)]
     pub struct Relayer {
-        // Stores the ZK result
+        // Stores the address of contract verifier
         pub verifier: AccountId,
-        /// Mapping from alias to scan public key & spend public key.
+        // Mapping from alias to scan public key & spend public key.
         public_keys: Mapping<String, (String, String)>,
+        // Stores the address of contract erc721
         pub erc721: AccountId,
+        // Stores commitments
         pub commitments: Mapping<String, bool>,
+        // Stores nullifier_hashes
         pub nullifier_hashes: Mapping<String, bool>,
+        // merkle tree level
         pub levels: u32,
         pub filled_subtrees: Mapping<u32, String>,
         pub roots: Mapping<u32, String>,
@@ -149,7 +195,7 @@ pub mod relayer {
           Ok(())
         }
 
-        /// deposit coin into contract
+        /// Deposit coin into contract
         #[ink(message, payable)]
         pub fn deposit(&mut self, commitment: String) -> Result<u32, Error> {
             if self.commitments.contains(commitment.clone()) {
@@ -186,7 +232,7 @@ pub mod relayer {
             return self.withdraw(proof, root, nullifier_hash, recipient, relayer, fee, refund);
         }
 
-        /// execute specified function of erc721 contract, and transfer note to relayer as transaction fees
+        /// Execute specified function of erc721 contract, and transfer note to relayer as transaction fees
         #[ink(message)]
         pub fn execute(
             &mut self,
@@ -214,7 +260,7 @@ pub mod relayer {
 
             let contract = self.erc721;
 
-            // match function of erc721 contract 
+            // Match function of erc721 contract 
             match function {
                 NFTFunction::Approve | NFTFunction::Transfer => {
                     let to = contract_params[0].get_value::<AccountId>().unwrap();
@@ -357,7 +403,7 @@ pub mod relayer {
             false
         }
 
-        /// use mimc sponge to hash params
+        /// Use mimc sponge to hash params
         pub fn mimc_sponge(&self, inputs: Vec<String>) -> U256 {
             let p = U256::from_decimal_str(SCALAR_FIELD).unwrap();
             let mut left = U256::ZERO;
@@ -383,7 +429,7 @@ pub mod relayer {
             left
         }
 
-        /// insert new leaf to merkle tree
+        /// Insert new leaf to merkle tree
         pub fn insert(&mut self, leaf: String) -> Result<u32, Error> {
             // self.next_index = nextndex;
             let next_index = self.next_index;

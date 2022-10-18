@@ -1,3 +1,16 @@
+//! This is a implementation of zero-knowledge proof verification based on groth16. 
+//!
+//! ## Warning
+//!
+//! This contract is an *example*. It is neither audited nor endorsed for production use.
+//! Do **not** rely on it to keep anything of value secure.
+//!
+//! ## Overview
+//!
+//! This contract demonstrates how to verify zero-knowledge proof on-chain.
+
+// This contract inspired by [zkMega from patractlabs](https://github.com/patractlabs/zkmega).
+
 #![cfg_attr(not(feature = "std"), no_std)]
 
 pub use self::verifier::{Verifier, VerifierRef};
@@ -24,6 +37,7 @@ mod verifier {
             Self {}
         }
 
+        /// Verify the zero-knowledge proof
         #[ink(message)]
         pub fn verify(
             &self,
@@ -35,6 +49,7 @@ mod verifier {
             fee: u128,
             refund: u128,
         ) -> bool {
+            // decode nullifier_hash
             let mut nullifier_vec = hex::decode(nullifier_hash).unwrap();
             nullifier_vec.reverse();
             let mut root_vec = hex::decode(root).unwrap();
@@ -50,8 +65,11 @@ mod verifier {
             ])
             .concat();
 
+            // decode proof
             let proof_vec = hex::decode(proof).unwrap();
             let proof_and_input = ([proof_vec, inputs]).concat();
+
+            // verify proof
             groth16::preprocessed_verify_proof::<Bn254>(
                 VK,
                 VK_GAMMA_ABC.to_vec(),
@@ -60,6 +78,7 @@ mod verifier {
             .unwrap()
         }
 
+        // Convert buff to input
         pub fn buff2input(&self, buffer: &[u8]) -> Vec<u8> {
             let result: Vec<Vec<u8>> = buffer
                 .chunks(16)

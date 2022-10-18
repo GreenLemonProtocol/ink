@@ -49,19 +49,6 @@ sh ./build-all.sh
 sh ./test-all.sh
 ```
 
-#### Generate docs
-
-```
-# contract relayer doc
-cargo doc --open --manifest-path relayer/Cargo.toml
-
-# contract verifier doc
-cargo doc --open --manifest-path verifier/Cargo.toml
-
-# contract erc721 doc
-cargo doc --open --manifest-path erc721/Cargo.toml
-```
-
 ### Test contract on-chain
 
 #### Deploy contract to local node
