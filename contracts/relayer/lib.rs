@@ -614,7 +614,6 @@ pub mod relayer {
     }
 }
 
-/// Returns a [`CallBuilder`] to a cross-contract call.
 ///
 /// # Example
 ///

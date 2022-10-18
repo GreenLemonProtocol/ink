@@ -25,7 +25,7 @@ try {
   // Compress ephemeral public key
   let ephemeralPublicKeyBytes = ephemeralPublicKey.toRawBytes(true);
 
-  nconf.file('./proofs/proof-2.json');
+  nconf.file('./proofs/proof-1.json');
   const nullifierHash = nconf.get('nullifierHash');
 
   // Ensure note is not spent

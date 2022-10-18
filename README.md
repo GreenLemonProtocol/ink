@@ -8,16 +8,19 @@ This project is funded by the Web3 Foundation Grants Program.
 * [Proposal: Green Lemon Protocol🍋 - An anonymous NFT solution](https://github.com/w3f/Grants-Program/pull/1096)
 
 Quick facts:
-* Anonymous NFT contract hiding token owners based on [dual-key stealth address protocol](https://github.com/GreenLemonProtocol/dksap-polkadot)
+* Anonymous NFT contract hiding token owners based on dual-key stealth address protocol
 * Send anonymous transactions to relayer contract based on zero-knowledge proof
 
-The relayer contract contains three functions: deposit, withdrawal, and execute.
+For more details about dual-key stealth address protocol, please [click me](https://github.com/GreenLemonProtocol/dksap-polkadot)
+
+The relayer contract contains 4 core functions: Deposit, RegisterPublicKeys, Withdrawal, and Execute.
 
 * Deposit: The user deposit a coin to the NFT anonymous contract and get a note, which is used to pay the relayer fees for anonymous transactions.
+* RegisterPublicKeys: The user registers the Scan public key and Spend public key to the NFT contract, so other users can query it on-chain.
 * Withdrawal: The user takes back the coin previously deposited, and nullifies the corresponding note. 
 * Execute: The user calls the NFT contract's function through the relayer contract.
 
-Both `withdrawal` and `execute` require the user generate a zero-knowledge proof. The `withdrawal` will send the coin back to the user. The `execute` will transfer coin to the relayer as transaction fees.
+Both `Withdrawal` and `Execute` require the user generate a zero-knowledge proof. The `Withdrawal` will send the coin back to the user. The `Execute` will transfer coin to the relayer as transaction fees.
 
 Medium articles:
 
@@ -42,13 +45,21 @@ Contract relayer & Contract verifier
 
 ```
 cd contracts
-sh contracts/build-test-all.sh
+sh ./build-all.sh
+sh ./test-all.sh
 ```
 
 #### Generate docs
 
 ```
-cargo doc --open
+# contract relayer doc
+cargo doc --open --manifest-path relayer/Cargo.toml
+
+# contract verifier doc
+cargo doc --open --manifest-path verifier/Cargo.toml
+
+# contract erc721 doc
+cargo doc --open --manifest-path erc721/Cargo.toml
 ```
 
 ### Test contract on-chain
@@ -60,7 +71,7 @@ cargo doc --open
 ./substrate-greenlemon-node --dev
 ```
 
-#### 2. Deploy compiled contract `erc721` and `verifier` and `relayer` to local node by [Polkadot/Substrate Portal](https://polkadot.js.org/apps/#/explorer).
+#### 2. Deploy compiled contract `erc721` and `verifier` and `relayer` to local node by [Polkadot Portal](https://polkadot.js.org/apps/#/explorer).
 
 contract erc721 deployment constructor param:
 baseUri
@@ -75,10 +86,25 @@ levels:
 ```
 
 #### 3. Update contract address
-Copy `relayer` contract address from `Polkadot/Substrate Portal` after contract deployed, open `http/config/default.json`, and update `ContractAddress`.
+
+* Copy `RELAYER` contract address from `Polkadot Portal` after contract deployed, open `http/config/default.json`, and update `RelayerContractAddress`
+* Copy `ERC721` contract address from `Polkadot Portal` after contract deployed, open `http/config/default.json`, and update `NFTContractAddress`
 
 
-### Generate commitment and proof
+#### 4. Start HTTP service
+```
+node http/index.js
+```
+
+#### 4. Running client test cases
+
+```
+node client/0-generateKeyPair.js
+node client/1-registerScanKey.js
+node client/2-mintToAlice.js
+```
+
+### Generate commitment and proof manually
 
 #### 0. run `build.sh` to compile the circuits and setup step to generate `proving.key` and `verification.key`
 ```
