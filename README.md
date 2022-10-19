@@ -84,7 +84,7 @@ contract relayer deployment constructor param:
 levels: 10
 ```
 
-Note: Please increase the `max gas allowed` to 50000000 when trying to call a contract action.
+Note: Please increase the `max gas allowed` to 50000000 when trying to call a contract action by `Polkadot Portal`.
 
 #### 3. Update contract address
 
