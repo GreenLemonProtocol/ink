@@ -22,7 +22,7 @@ Medium articles:
 
 ### Product Logic
 
-Green Lemon Protocol is a service like coin mixers that allows users to obfuscate the origin and destination of transactions. Because of the logic of the blockchain, every transaction is public. If you have some DOT on your account, you cannot transfer it anonymously, because anybody can follow your transaction history on the blockchain. Coin mixers, like Tornado Cash, can solve this privacy problem by breaking the on-chain link between the source and the destination address by using ZKP. Most importantly, we can trigger a third-party contract when we submit the zero-knowledge proof, and pay transaction fees to the relayer service. If the transaction fees you paid can cover the cost of calling a third-party contract. Then the whole logic makes sense.
+Green Lemon Protocol is a service like coin mixers that allows users to obfuscate the origin and destination of transactions, and submit transactions to third contracts anonymously. Because of the logic of the blockchain, every transaction is public. If you have some DOT on your account, you cannot transfer it anonymously, because anybody can follow your transaction history on the blockchain. Coin mixers, like Tornado Cash, can solve this privacy problem by breaking the on-chain link between the source and the destination address by using ZKP. Most importantly, we can trigger a third-party contract when we submit the zero-knowledge proof, and pay transaction fees to the relayer service. If the transaction fees you paid can cover the cost of calling a third-party contract. Then the whole logic makes sense.
 
 If you want to anonymize one of your transactions, you have to deposit a small amount of DOT on the Green Lemon Protocol contract (ex.: 1 DOT). After a little while, you can withdraw this 1 DOT with a different account. The trick is that nobody can create a link between the depositor account and the withdrawal account. If hundreds of accounts deposit 1 DOT on one side and the other hundreds of accounts withdraw 1 DOT on the other side, then nobody will be able to follow the path where the money moves.
 
@@ -83,6 +83,8 @@ contract relayer deployment constructor param:
 ```
 levels: 10
 ```
+
+Note: Please increase the `max gas allowed` to 50000000 when trying to call a contract action.
 
 #### 3. Update contract address
 
