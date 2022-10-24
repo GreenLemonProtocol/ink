@@ -10,10 +10,8 @@ This project is funded by the Web3 Foundation Grants Program.
 * [Proposal: Green Lemon Protocol🍋 - An anonymous NFT solution](https://github.com/w3f/Grants-Program/pull/1096)
 
 Quick facts:
-* Anonymous NFT contract hiding token owners based on dual-key stealth address protocol
-* Send anonymous transactions to relayer contract based on zero-knowledge proof
-
-For more details about dual-key stealth address protocol, please [click me](https://github.com/GreenLemonProtocol/dksap-polkadot).
+* Encrypt the asset owner based on dual-key stealth address protocol
+* Send anonymous transactions based on zero-knowledge proof
 
 Medium articles:
 
@@ -26,9 +24,9 @@ Green Lemon Protocol is a service like coin mixers that allows users to obfuscat
 
 If you want to anonymize one of your transactions, you have to deposit a small amount of DOT on the Green Lemon Protocol contract (ex.: 1 DOT). After a little while, you can transfer this 1 DOT to the account of relayer service with a different account and submit a transaction to the third contract. The trick is that nobody can create a link between the depositor account and the transferer account. If hundreds of accounts deposit 1 DOT on one side and the other hundreds of accounts transfer 1 DOT on the other side, then nobody will be able to follow the path where the transaction moves.
 
-The technical challenge is that smart contract transactions are also public like any other transaction on the Polkadot network. This is the point where zero-knowledge proof will be relevant.
+One of the technical challenges is that smart contract transactions are also public like any other transaction on the Polkadot network. This is the point where zero-knowledge proof will be relevant. For more details about zero-knowledge proof, please [click me](https://betterprogramming.pub/understanding-zero-knowledge-proofs-through-the-source-code-of-tornado-cash-41d335c5475f).
 
-For more details about zero-knowledge proof, please [click me](https://betterprogramming.pub/understanding-zero-knowledge-proofs-through-the-source-code-of-tornado-cash-41d335c5475f).
+Another technical challenge is how to encrypt asset owners. This is the point where DKSAP will be relevant. For more details about dual-key stealth address protocol, please [click me](https://github.com/GreenLemonProtocol/dksap-polkadot).
 
 ### Work flow
 
