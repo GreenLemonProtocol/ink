@@ -10,8 +10,8 @@ This project is funded by the Web3 Foundation Grants Program.
 * [Proposal: Green Lemon Protocol🍋 - An anonymous NFT solution](https://github.com/w3f/Grants-Program/pull/1096)
 
 Quick facts:
-* Encrypt the asset owner based on dual-key stealth address protocol
 * Send anonymous transactions based on zero-knowledge proof
+* Encrypt the asset owner based on dual-key stealth address protocol
 
 Medium articles:
 
