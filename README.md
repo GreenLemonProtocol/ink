@@ -13,11 +13,6 @@ Quick facts:
 * Send anonymous transactions based on zero-knowledge proof
 * Encrypt the asset owner based on dual-key stealth address protocol
 
-Medium articles:
-
-* [Green Lemon Protocol I — An anonymous NFT solution](https://medium.com/@wuyahuang/green-lemon-protocol-an-anonymous-nft-solution-2fad91cc8f48)
-* [Green Lemon Protocol II - An anonymous NFT solution](https://medium.com/@wuyahuang/green-lemon-protocol-ii-an-anonymous-nft-solution-917046a8f1ef)
-
 ### Product Logic
 
 Green Lemon Protocol is a service like coin mixers that allows users to obfuscate the origin and destination of transactions, and submit transactions to third contracts anonymously. Because of the logic of the blockchain, every transaction is public. If you have some DOT on your account, you cannot transfer it anonymously, because anybody can follow your transaction history on the blockchain. Coin mixers, like Tornado Cash, can solve this privacy problem by breaking the on-chain link between the source and the destination address by using ZKP. Most importantly, we can trigger a third-party contract when we submit the zero-knowledge proof, and pay transaction fees to the relayer service. If the transaction fees you paid can cover the cost of calling a third-party contract. Then the whole logic makes sense.
@@ -138,3 +133,9 @@ node scripts/4-verify-proof-offchain.js
 
 * [Milestone 1](https://www.youtube.com/watch?v=etVIPgOjFNg)
 * [Milestone 2](https://www.youtube.com/watch?v=2cP22UEVMF0)
+
+Medium articles:
+
+* [Green Lemon Protocol I — An anonymous NFT solution](https://medium.com/@wuyahuang/green-lemon-protocol-an-anonymous-nft-solution-2fad91cc8f48)
+* [Green Lemon Protocol II - An anonymous NFT solution](https://medium.com/@wuyahuang/green-lemon-protocol-ii-an-anonymous-nft-solution-917046a8f1ef)
+
