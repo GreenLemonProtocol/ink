@@ -4,14 +4,14 @@
 
 The Green Lemon Protocol is an anonymous decentralized application platform based on zero-knowledge proof and dual-key stealth address protocol. Anyone can deploy their own anonymous smart contract and integrate it with our relayer service. Or use our template contract as well. ERC-721(NFT) is supported, and ERC-20 is under development.
 
+Quick facts:
+* Send anonymous transactions based on zero-knowledge proof
+* Encrypt the asset owner based on dual-key stealth address protocol
+
 This project is funded by the Web3 Foundation Grants Program.
 
 * [Proposal: Dual-Key Stealth Address Protocol](https://github.com/w3f/Grants-Program/pull/997)
 * [Proposal: Green Lemon Protocol🍋 - An anonymous NFT solution](https://github.com/w3f/Grants-Program/pull/1096)
-
-Quick facts:
-* Send anonymous transactions based on zero-knowledge proof
-* Encrypt the asset owner based on dual-key stealth address protocol
 
 ### Product Logic
 
@@ -129,13 +129,12 @@ node scripts/3-generate-proof.js
 node scripts/4-verify-proof-offchain.js
 ```
 
-### Demo Video
-
-* [Milestone 1](https://www.youtube.com/watch?v=etVIPgOjFNg)
-* [Milestone 2](https://www.youtube.com/watch?v=2cP22UEVMF0)
-
 Medium articles:
 
 * [Green Lemon Protocol I — An anonymous NFT solution](https://medium.com/@wuyahuang/green-lemon-protocol-an-anonymous-nft-solution-2fad91cc8f48)
 * [Green Lemon Protocol II - An anonymous NFT solution](https://medium.com/@wuyahuang/green-lemon-protocol-ii-an-anonymous-nft-solution-917046a8f1ef)
 
+### Demo Video
+
+* [Milestone 1](https://www.youtube.com/watch?v=etVIPgOjFNg)
+* [Milestone 2](https://www.youtube.com/watch?v=2cP22UEVMF0)
