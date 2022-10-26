@@ -129,7 +129,7 @@ node scripts/3-generate-proof.js
 node scripts/4-verify-proof-offchain.js
 ```
 
-Medium articles:
+### Medium articles:
 
 * [Green Lemon Protocol I — An anonymous NFT solution](https://medium.com/@wuyahuang/green-lemon-protocol-an-anonymous-nft-solution-2fad91cc8f48)
 * [Green Lemon Protocol II - An anonymous NFT solution](https://medium.com/@wuyahuang/green-lemon-protocol-ii-an-anonymous-nft-solution-917046a8f1ef)
