@@ -21,7 +21,7 @@ If you want to anonymize one of your transactions, you have to deposit a small a
 
 One of the technical challenges is that smart contract transactions are also public like any other transaction on the Polkadot network. This is the point where zero-knowledge proof will be relevant. For more details about zero-knowledge proof, please [click me](https://betterprogramming.pub/understanding-zero-knowledge-proofs-through-the-source-code-of-tornado-cash-41d335c5475f).
 
-Another technical challenge is how to encrypt asset owners. This is the point where DKSAP will be relevant. For more details about dual-key stealth address protocol, please [click me](https://github.com/GreenLemonProtocol/dksap-polkadot).
+Another technical challenge is how to encrypt asset owners. This is the point where dual-key stealth address protocol will be relevant. For more details about DKSAP, please [click me](https://github.com/GreenLemonProtocol/dksap-polkadot).
 
 ### Work flow
 
