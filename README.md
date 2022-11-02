@@ -36,6 +36,7 @@ The relayer contract contains 4 core functions: Deposit, RegisterPublicKeys, Wit
 
 Both `Withdrawal` and `Execute` require the user generate a zero-knowledge proof. The `Withdrawal` will send the coin back to the user. The `Execute` will transfer coin to the relayer as transaction fees.
 
+At present, it is relatively slow to verify zero-knowledge proof on-chain. We are planning to integrate APIs related to zero-knowledge proof into the substrate, to improve the execution speed of the transaction.
 
 ### Install
 If you are a new talent for Polkadot blockchain or Node.js, please install the DEV environment first.
