@@ -102,7 +102,7 @@ node client/0-generateKeyPair.js
 node client/1-registerScanKey.js
 ```
 
-Enter in "Alice" as an alias string into the contract call to make sure the public key is registered.
+Enter in "Alice" as an alias string into the contract call, and check the public key is registered.
 
 #### 7. Mint NFT Annoymously
 
