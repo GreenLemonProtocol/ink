@@ -85,17 +85,28 @@ Note: Please increase the `max gas allowed` to 50000000 when trying to call a co
 * Copy `RELAYER` contract address from Polkadot Portal after contract deployed, open `http/config/default.json`, and update `RelayerContractAddress`
 * Copy `ERC721` contract address from Polkadot Portal after contract deployed, open `http/config/default.json`, and update `NFTContractAddress`
 
+#### 4. Deposit coin and commitment
 
-#### 4. Start HTTP service
+* Copy the "commitmentHex" string from proofs/proof-1.json enter it into the contract call with a value of "1" (1 Unit DOT)
+* Increase `max gas allowed` to `50000000`
+
+#### 5. Start HTTP service
 ```
 node http/index.js
 ```
 
-#### 5. Running client test cases
+#### 6. Register public key for Alice
 
 ```
 node client/0-generateKeyPair.js
 node client/1-registerScanKey.js
+```
+
+Enter in "Alice" as an alias string into the contract call to make sure the public key is registered.
+
+#### 7. Mint NFT Annoymously
+
+```
 node client/2-mintToAlice.js
 ```
 
