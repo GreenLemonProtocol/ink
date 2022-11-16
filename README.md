@@ -87,7 +87,7 @@ Note: Please increase the `max gas allowed` to 50000000 when trying to call a co
 
 #### 4. Deposit coin and commitment
 
-* Copy the "commitmentHex" string from proofs/proof-1.json enter it into the contract call with a value of "1" (1 Unit DOT)
+* Copy the "commitmentHex" string from proofs/proof-1.json, and enter it into the contract call with a value of "1" (1 Unit DOT)
 * Increase `max gas allowed` to `50000000`
 
 #### 5. Start HTTP service
