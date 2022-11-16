@@ -110,32 +110,39 @@ Enter in "Alice" as an alias string into the contract call to make sure the publ
 node client/2-mintToAlice.js
 ```
 
-### Generate commitment and proof manually
+### Circuits
+With ZKP, you can prove that you know something without revealing the thing that you know. For generating a ZKP, you need a circuit. A circuit is something like a small program that has public inputs and outputs, and private inputs. These private inputs are the knowledge that you don’t reveal for the verification, this is why it is called zero-knowledge proof. With ZKP, we can prove that the output can be generated from the inputs with the given circuit.
 
-#### 0. run `build.sh` to compile the circuits and setup step to generate `proving.key` and `verification.key`
+run `build.sh` to compile the circuits and setup step to generate `proving.key` and `verification.key`
 ```
 sh ./circuits/build.sh
 ```
 
-#### 1. Generate commitment
+### Generate commitment and proof manually
+
+As mentioned above, When you deposit 1 DOT on the Green Lemon contract, you have to provide a commitment hash. This commitment hash will be stored in a Merkle tree. When you execute third contract action, you have to provide 2 zero-knowledge proofs. The first proves that the Merkel tree contains your commitment. This proof is a zero-knowledge proof of a Merkle proof. But this is not enough, because you should be allowed to spend this 1 DOT only once. Because of this, you have to provide a nullifier that is unique for the commitment. The contract stores this nullifier, this ensures that you don’t be able to spend the deposited money more than one time.
+
+Each transaction consumes one commitment. We provide five in the proof folder. If you need more, please execute the following script.
+
+#### 0. Generate commitment
 
 ```
 node scripts/1-generateCommitment.js
 ```
 
-#### 2. Compute witness
+#### 1. Compute witness
 
 ```
 node scripts/2-compute-witness.js
 ```
 
-#### 3. Generate zero knowledge proof
+#### 2. Generate zero knowledge proof
 
 ```
 node scripts/3-generate-proof.js
 ```
 
-#### 4. Verify zero knowledge proof off-chain
+#### 3. Verify zero knowledge proof off-chain
 
 ```
 node scripts/4-verify-proof-offchain.js
