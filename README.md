@@ -87,7 +87,7 @@ Note: Please increase the `max gas allowed` to 50000000 when trying to call a co
 
 #### 4. Deposit coin and commitment
 
-* Copy the "commitmentHex" string from proofs/proof-1.json, and enter it into the contract call with a value of "1" (1 Unit DOT)
+* Copy the `commitmentHex` string from proofs/proof-1.json, and enter it into the contract call with a value of `1` (1 Unit DOT)
 * Increase `max gas allowed` to `50000000`
 
 #### 5. Start HTTP service
@@ -113,7 +113,7 @@ node client/2-mintToAlice.js
 ### Circuits
 With ZKP, you can prove that you know something without revealing the thing that you know. For generating a ZKP, you need a circuit. A circuit is something like a small program that has public inputs and outputs, and private inputs. These private inputs are the knowledge that you don’t reveal for the verification, this is why it is called zero-knowledge proof. With ZKP, we can prove that the output can be generated from the inputs with the given circuit.
 
-run `build.sh` to compile the circuits and setup step to generate `proving.key` and `verification.key`
+run `build.sh` to re-compile the circuits and setup step to generate `proving.key` and `verification.key`
 ```
 sh ./circuits/build.sh
 ```
