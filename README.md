@@ -41,7 +41,7 @@ At present, it is relatively slow to verify zero-knowledge proof on-chain. We ar
 ### Install
 If you are a new talent for Polkadot blockchain or Node.js, please install the DEV environment first.
 
-* Download [substrate-greenlemon-node](https://github.com/GreenLemonProtocol/substrate-contracts-node/releases). The substrate-greenlemon-node is a new version of the substrate after increased MAXIMUM_BLOCK_WEIGHT. The default value of MAXIMUM_BLOCK_WEIGHT is too low to verify zero-knowledge proof on-chain.
+* Download `substrate-greenlemon-node-mac-universal.zip` from [release page](https://github.com/GreenLemonProtocol/substrate-contracts-node/releases). The substrate-greenlemon-node is a new version of the substrate after increased MAXIMUM_BLOCK_WEIGHT. The default value of MAXIMUM_BLOCK_WEIGHT is too low to verify zero-knowledge proof on-chain.
 * [Install Node.js environment](https://nodejs.org/en/download/)
 * [Install Zokrates](https://zokrates.github.io/gettingstarted.html)
 * [Install cargo-contract](https://github.com/paritytech/cargo-contract), because we need to add nightly builds to Rust runtime env & install binaryen in a version >= 99.
@@ -62,6 +62,9 @@ sh ./test-all.sh
 #### Deploy contract to local node
 
 #### 1. Start the local substrate node
+
+Please extracting the file `substrate-greenlemon-node-mac-universal.zip` first, and then execute
+
 ```
 ./substrate-greenlemon-node --dev
 ```
