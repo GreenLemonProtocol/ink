@@ -151,6 +151,8 @@ node scripts/2-generate-proof.js
 node scripts/3-verify-proof-offchain.js
 ```
 
+Copy `commitmentHex` to deposit DOT, and copy `proof` to call third smart contract action.
+
 ### Medium articles:
 
 * [Green Lemon Protocol I — An anonymous NFT solution](https://medium.com/@wuyahuang/green-lemon-protocol-an-anonymous-nft-solution-2fad91cc8f48)
