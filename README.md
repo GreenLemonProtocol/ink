@@ -130,25 +130,25 @@ Each transaction consumes one commitment. We provide five in the proof folder. I
 #### 0. Generate commitment
 
 ```
-node scripts/1-generateCommitment.js
+node scripts/0-generateCommitment.js
 ```
 
 #### 1. Compute witness
 
 ```
-node scripts/2-compute-witness.js
+node scripts/1-compute-witness.js
 ```
 
 #### 2. Generate zero knowledge proof
 
 ```
-node scripts/3-generate-proof.js
+node scripts/2-generate-proof.js
 ```
 
 #### 3. Verify zero knowledge proof off-chain
 
 ```
-node scripts/4-verify-proof-offchain.js
+node scripts/3-verify-proof-offchain.js
 ```
 
 ### Medium articles:
