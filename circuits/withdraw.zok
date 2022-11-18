@@ -4,7 +4,7 @@ const u32 DEPTH = 10;
 
 // directionSelector => true if current digest is on the rhs of the hash
 
-def merkleTreeChecker(field root, private field leaf, private bool[DEPTH] directionSelector, private field[DEPTH] path) -> bool {
+def merkleTreeChecker(field root, field leaf, bool[DEPTH] directionSelector, field[DEPTH] path) -> bool {
     // Start from the leaf
     field mut digest = leaf;
 
