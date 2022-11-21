@@ -151,7 +151,7 @@ node scripts/2-generate-proof.js
 node scripts/3-verify-proof-offchain.js
 ```
 
-Copy `commitmentHex` to deposit DOT, and copy `proof` to call third smart contract action.
+Copy `commitmentHex` to deposit DOT, and copy `proof` to execute third smart contract action.
 
 ### Medium articles:
 
