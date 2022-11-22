@@ -645,6 +645,61 @@ pub mod erc721 {
     }
 
     #[ink::test]
+    fn transfer_from() {
+      // Create a new contract instance.
+      let mut erc721 = Erc721::new(BASE_URI.to_string());
+      let alice_ephemeral_public_key = ALICE_EPHEMERAL_PUBLIC_KEY.to_string();
+      let alice_encrypted_address = AccountId::from(ALICE_ENCRYPTED_ADDRESS_BYTES);
+
+      let bob_ephemeral_public_key = BOB_EPHEMERAL_PUBLIC_KEY.to_string();
+      let bob_encrypted_address = AccountId::from(BOB_ENCRYPTED_ADDRESS_BYTES);
+
+      let charlie_ephemeral_public_key = CHARLIE_EPHEMERAL_PUBLIC_KEY.to_string();
+      let charlie_encrypted_address = AccountId::from(CHARLIE_ENCRYPTED_ADDRESS_BYTES);
+      let nft_id = 1;
+      // Create token Id 1 for Alice.
+      assert_eq!(
+        erc721.mint(alice_encrypted_address, alice_ephemeral_public_key.clone()),
+        Ok(())
+      );
+
+      // Alice owns token 1.
+      assert_eq!(erc721.balance_of(alice_encrypted_address), 1);
+      assert_eq!(erc721.token_nonce_of(nft_id), 1);
+
+      // Alice approves Bob to transfer token 1.
+      assert_eq!(
+        erc721.approve(
+          bob_encrypted_address,
+          nft_id,
+          bob_ephemeral_public_key.clone(),
+          ALICE_APPROVE_TO_BOB_SIGNATURE.to_string()
+        ),
+        Ok(())
+      );
+      assert_eq!(erc721.token_nonce_of(nft_id), 2);
+
+      // Check Bob approved by Alice
+      assert_eq!(erc721.get_approved(nft_id), Some(bob_encrypted_address));
+
+      // Bob transfer token Id 1 should work
+      assert_eq!(
+        erc721.transfer_from(
+          alice_encrypted_address,
+          charlie_encrypted_address,
+          nft_id,
+          charlie_ephemeral_public_key,
+          BOB_TRANSFER_TO_CHARLIE_SIGNATURE.to_string()
+        ),
+        Ok(())
+      );
+
+      // Owner owns NFT 1.
+      assert_eq!(erc721.owner_of(nft_id), Some(charlie_encrypted_address));
+      assert_eq!(erc721.token_nonce_of(nft_id), 3);
+    }
+
+    #[ink::test]
     fn approve_and_transfer() {
       // Create a new contract instance.
       let mut erc721 = Erc721::new(BASE_URI.to_string());
