@@ -162,7 +162,7 @@ pub mod erc721 {
     /// Every signature signed by the token owner needs to hash the latest token nonce
     #[ink(message)]
     pub fn token_nonce_of(&self, id: TokenId) -> u32 {
-      self.token_nonce.get(&id).unwrap_or(0)
+      self.token_nonce.get(id).unwrap_or(0)
     }
 
     /// Returns the balance of the owner.
@@ -176,13 +176,13 @@ pub mod erc721 {
     /// Returns the owner of the token.
     #[ink(message)]
     pub fn owner_of(&self, id: TokenId) -> Option<AccountId> {
-      self.token_owner.get(&id)
+      self.token_owner.get(id)
     }
 
     /// Returns the approved account ID for this token if any.
     #[ink(message)]
     pub fn get_approved(&self, id: TokenId) -> Option<AccountId> {
-      self.token_approvals.get(&id)
+      self.token_approvals.get(id)
     }
 
     /// Approves the account to transfer the specified token on behalf of the caller.
@@ -201,7 +201,7 @@ pub mod erc721 {
     /// Returns the ephemeral public key by NFT id.
     #[ink(message)]
     pub fn ephemeral_public_key_of(&self, id: TokenId) -> Option<String> {
-      self.token_ephemeral.get(&id)
+      self.token_ephemeral.get(id)
     }
 
     /// Returns the toatl supply.
@@ -283,19 +283,19 @@ pub mod erc721 {
 
       let signer = self.recover_signer(&messag_hash, &signature)?;
 
-      let owner = self.token_owner.get(&id).ok_or(Error::TokenNotFound)?;
+      let owner = self.token_owner.get(id).ok_or(Error::TokenNotFound)?;
       if owner != signer {
         return Err(Error::NotOwner);
       };
 
       let count = self
         .owned_tokens_count
-        .get(&signer)
+        .get(signer)
         .map(|c| c - 1)
         .ok_or(Error::CannotFetchValue)?;
-      self.owned_tokens_count.insert(&signer, &count);
-      self.token_owner.remove(&id);
-      self.token_nonce.remove(&id);
+      self.owned_tokens_count.insert(signer, &count);
+      self.token_owner.remove(id);
+      self.token_nonce.remove(id);
       self.total_supply -= 1;
 
       self.env().emit_event(Transfer {
@@ -406,10 +406,10 @@ pub mod erc721 {
       // Update token nonce
       let nonce = self
         .token_nonce
-        .get(&id)
+        .get(id)
         .map(|c| c + 1)
         .ok_or(Error::CannotFetchValue)?;
-      self.token_nonce.insert(&id, &nonce);
+      self.token_nonce.insert(id, &nonce);
 
       self.env().emit_event(Transfer {
         from: Some(*from),
@@ -427,16 +427,16 @@ pub mod erc721 {
         ..
       } = self;
 
-      if !token_owner.contains(&id) {
+      if !token_owner.contains(id) {
         return Err(Error::TokenNotFound);
       }
 
       let count = owned_tokens_count
-        .get(&from)
+        .get(from)
         .map(|c| c - 1)
         .ok_or(Error::CannotFetchValue)?;
-      owned_tokens_count.insert(&from, &count);
-      token_owner.remove(&id);
+      owned_tokens_count.insert(from, &count);
+      token_owner.remove(id);
 
       Ok(())
     }
@@ -456,18 +456,18 @@ pub mod erc721 {
       let count = owned_tokens_count.get(to).map(|c| c + 1).unwrap_or(1);
 
       owned_tokens_count.insert(to, &count);
-      token_owner.insert(&id, to);
+      token_owner.insert(id, to);
 
       Ok(())
     }
 
     /// Adds ephemeral public key to TokenId
     fn add_ephemeral_public_key(&mut self, id: TokenId, ephemeral_public_key: String) {
-      if self.token_ephemeral.contains(&id) {
-        self.token_ephemeral.remove(&id);
+      if self.token_ephemeral.contains(id) {
+        self.token_ephemeral.remove(id);
       }
 
-      self.token_ephemeral.insert(&id, &ephemeral_public_key);
+      self.token_ephemeral.insert(id, &ephemeral_public_key);
     }
 
     /// Approve the passed `AccountId` to transfer the specified token on behalf of the message's sender.
@@ -496,10 +496,10 @@ pub mod erc721 {
         return Err(Error::NotAllowed);
       };
 
-      if self.token_approvals.contains(&id) {
+      if self.token_approvals.contains(id) {
         return Err(Error::CannotInsert);
       } else {
-        self.token_approvals.insert(&id, to);
+        self.token_approvals.insert(id, to);
       }
 
       self.add_ephemeral_public_key(id, ephemeral_public_key);
@@ -507,10 +507,10 @@ pub mod erc721 {
       // Update token nonce
       let nonce = self
         .token_nonce
-        .get(&id)
+        .get(id)
         .map(|c| c + 1)
         .ok_or(Error::CannotFetchValue)?;
-      self.token_nonce.insert(&id, &nonce);
+      self.token_nonce.insert(id, &nonce);
 
       self.env().emit_event(Approval {
         from: signer,
@@ -523,7 +523,7 @@ pub mod erc721 {
 
     /// Removes existing approval from token `id`.
     fn clear_approval(&mut self, id: TokenId) {
-      self.token_approvals.remove(&id);
+      self.token_approvals.remove(id);
     }
 
     // Returns the total number of tokens from an account.
@@ -536,12 +536,12 @@ pub mod erc721 {
     fn approved_or_owner(&self, from: Option<AccountId>, id: TokenId) -> bool {
       let owner = self.owner_of(id);
       from != Some(AccountId::from([0x0; 32]))
-        && (from == owner || from == self.token_approvals.get(&id))
+        && (from == owner || from == self.token_approvals.get(id))
     }
 
     /// Returns true if token `id` exists or false if it does not.
     fn exists(&self, id: TokenId) -> bool {
-      self.token_owner.contains(&id)
+      self.token_owner.contains(id)
     }
   }
 
@@ -659,7 +659,7 @@ pub mod erc721 {
       let nft_id = 1;
       // Create token Id 1 for Alice.
       assert_eq!(
-        erc721.mint(alice_encrypted_address, alice_ephemeral_public_key.clone()),
+        erc721.mint(alice_encrypted_address, alice_ephemeral_public_key),
         Ok(())
       );
 
@@ -672,7 +672,7 @@ pub mod erc721 {
         erc721.approve(
           bob_encrypted_address,
           nft_id,
-          bob_ephemeral_public_key.clone(),
+          bob_ephemeral_public_key,
           ALICE_APPROVE_TO_BOB_SIGNATURE.to_string()
         ),
         Ok(())
@@ -750,7 +750,7 @@ pub mod erc721 {
         erc721.approve(
           alice_encrypted_address,
           2,
-          alice_ephemeral_public_key.clone(),
+          alice_ephemeral_public_key,
           ALICE_APPROVE_TO_BOB_SIGNATURE.to_string()
         ),
         Err(Error::NotAllowed)
@@ -761,7 +761,7 @@ pub mod erc721 {
         erc721.approve(
           bob_encrypted_address,
           nft_id,
-          bob_ephemeral_public_key.clone(),
+          bob_ephemeral_public_key,
           ALICE_APPROVE_TO_BOB_SIGNATURE.to_string()
         ),
         Ok(())
@@ -834,7 +834,7 @@ pub mod erc721 {
       assert_eq!(erc721.total_supply(), 1);
 
       // Burn token Id 1.
-      assert_eq!(erc721.burn(1, alice_burn_signature.to_string()), Ok(()));
+      assert_eq!(erc721.burn(1, alice_burn_signature), Ok(()));
 
       // Alice does not owns tokens.
       assert_eq!(erc721.balance_of(alice_encrtyped_address), 0);
