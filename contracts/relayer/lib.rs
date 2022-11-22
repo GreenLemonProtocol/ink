@@ -174,7 +174,7 @@ pub mod relayer {
         /// Returns the public keys of the alias.
         #[ink(message)]
         pub fn public_keys_of(&self, alias: String) -> Option<(String, String)> {
-          self.public_keys.get(&alias)
+          self.public_keys.get(alias)
         }
 
         /// Register scan public key
@@ -412,7 +412,7 @@ pub mod relayer {
             let mut a;
             let k = U256::ZERO;
             for elt in inputs {
-                left = left + U256::from_hex_str(&elt) % &p;
+                left += U256::from_hex_str(&elt) % &p;
                 for i in 0..(220 - 1) {
                     t = (&left + U256::from_decimal_str(IV[i]).unwrap() + &k) % &p;
                     a = t.mulmod(&t, &p); // t^2
