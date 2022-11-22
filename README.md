@@ -117,12 +117,12 @@ Enter in "Alice" as an alias string into the contract call, and check the public
 node client/2-mintToAlice.js
 ```
 
-Please ensure `zokrates` is added into `$PATH` before execute follow commands. `export PATH=$PATH:/Users/$USER/.zokrates/bin`
-
 ### Circuits
 With ZKP, you can prove that you know something without revealing the thing that you know. For generating a ZKP, you need a circuit. A circuit is something like a small program that has public inputs and outputs, and private inputs. These private inputs are the knowledge that you don’t reveal for the verification, this is why it is called zero-knowledge proof. With ZKP, we can prove that the output can be generated from the inputs with the given circuit.
 
 run `build.sh` to re-compile the circuits and setup step to generate `proving.key` and `verification.key`
+
+Please ensure `zokrates` is added into `$PATH` before execute follow commands. `export PATH=$PATH:/Users/$USER/.zokrates/bin`
 
 ```
 sh ./circuits/build.sh
