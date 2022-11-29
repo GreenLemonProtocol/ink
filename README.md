@@ -25,7 +25,7 @@ Another technical challenge is how to encrypt asset owners. This is the point wh
 
 ### Work flow
 
-![workflow.jpg](./docs/workflow.jpg)
+![workflow.jpg](./docs/workflow.jpeg)
 
 The relayer contract contains 4 core functions: Deposit, RegisterPublicKeys, Withdrawal, and Execute.
 
