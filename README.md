@@ -2,7 +2,7 @@
 
 ### Overview
 
-The Green Lemon Protocol is an anonymous decentralized application platform based on zero-knowledge proof and dual-key stealth address protocol. Anyone can deploy their own anonymous smart contract and integrate it with our relayer service. Or use our template contract as well. ERC-721(NFT) is supported, and ERC-20 is under development.
+The Green Lemon Protocol is an anonymous NFT platform based on zero-knowledge proof and dual-key stealth address protocol. Anyone can deploy their own anonymous NFT smart contract and integrate it with our relayer service. Or use our template contract as well.
 
 Quick facts:
 * Send anonymous transactions based on zero-knowledge proof
@@ -15,7 +15,7 @@ This project is funded by the Web3 Foundation Grants Program.
 
 ### Product Logic
 
-Green Lemon Protocol is a service like coin mixers that allows users to obfuscate the origin and destination of transactions, and submit transactions to third contracts anonymously. Because of the logic of the blockchain, every transaction is public. If you have some DOT on your account, you cannot transfer it anonymously, because anybody can follow your transaction history on the blockchain. Coin mixers, like Tornado Cash, can solve this privacy problem by breaking the on-chain link between the source and the destination address by using ZKP. Most importantly, we can trigger a third-party contract when we submit the zero-knowledge proof, and pay transaction fees to the relayer service. If the transaction fees you paid can cover the cost of calling a third-party contract. Then the whole logic makes sense.
+Green Lemon Protocol is a service like coin mixers that allows users to obfuscate the origin and destination of transactions, and submit transactions to third contracts anonymously. Because of the logic of the blockchain, every transaction is public. If you have some DOT on your account, you cannot transfer it anonymously, because anybody can follow your transaction history on the blockchain. Coin mixers, like Tornado Cash, can solve this privacy problem by breaking the on-chain link between the source and the destination address by using ZKP. Most importantly, we can trigger the functions of NFT smart contract when we submit the zero-knowledge proof, and pay transaction fees to the relayer service. If the transaction fees you paid can cover the cost of calling a third-party contract. Then the whole logic makes sense.
 
 If you want to anonymize one of your transactions, you have to deposit a small amount of DOT on the Green Lemon Protocol contract (ex.: 1 DOT). After a little while, you can transfer this 1 DOT to the account of relayer service with a different account and submit a transaction to the third contract. The trick is that nobody can create a link between the depositor account and the transferer account. If hundreds of accounts deposit 1 DOT on one side and the other hundreds of accounts transfer 1 DOT on the other side, then nobody will be able to follow the path where the transaction moves.
 
